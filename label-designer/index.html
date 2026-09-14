@@ -442,16 +442,16 @@
       <h3 class="sub">白枠の調整</h3>
       <div class="field-grid">
         <div class="slider-field">
-          <label for="lFrameThick">外枠の太さ<output id="lFrameThickVal">2.6</output></label>
-          <input type="range" id="lFrameThick" min="0" max="6" step="0.2" value="2.6">
+          <label for="lFrameThick">外枠の太さ<output id="lFrameThickVal">1.0</output></label>
+          <input type="range" id="lFrameThick" min="0" max="6" step="0.2" value="1">
         </div>
         <div class="slider-field">
-          <label for="lInnerPad">白背景の余白<output id="lInnerPadVal">3.0</output></label>
-          <input type="range" id="lInnerPad" min="1" max="7" step="0.2" value="3">
+          <label for="lInnerPad">白背景の余白<output id="lInnerPadVal">2.0</output></label>
+          <input type="range" id="lInnerPad" min="1" max="7" step="0.2" value="2">
         </div>
         <div class="slider-field">
-          <label for="lRadius">角の丸み<output id="lRadiusVal">3.0</output></label>
-          <input type="range" id="lRadius" min="0" max="7" step="0.2" value="3">
+          <label for="lRadius">角の丸み<output id="lRadiusVal">0.0</output></label>
+          <input type="range" id="lRadius" min="0" max="7" step="0.2" value="0">
         </div>
       </div>
 
@@ -623,7 +623,7 @@
     }
   ];
 
-  var DEFAULT_LAYOUT = {frameThickness:2.6, innerPadding:3, cornerRadius:3};
+  var DEFAULT_LAYOUT = {frameThickness:1, innerPadding:2, cornerRadius:0};
 
   var state = null;
   var els = {};
