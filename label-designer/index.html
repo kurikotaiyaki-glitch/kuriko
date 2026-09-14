@@ -97,31 +97,33 @@
   }
 
   /* ---------- label artwork ---------- */
+  /* Sized with container-query units (cqw) off #label's own inline size, and
+     height is intentionally auto (content-driven) so no combination of
+     longer text / thicker frame / more allergens can ever overlap or clip. */
   #label{
     container-type: inline-size;
     container-name: label;
     width:100%;
-    aspect-ratio: 2.85 / 1;
-    border-radius: 3.2cqw;
+    border-radius: var(--radius-outer, 3.2cqw);
     background: var(--frame-color, #f6de9e);
-    padding: 2.6cqw;
+    padding: var(--frame-thick, 2.6cqw);
     box-shadow: 0 2px 0 rgba(0,0,0,.04), 0 18px 30px -20px rgba(20,12,4,.45);
   }
   .label-inner{
     position:relative;
-    height:100%; width:100%;
+    width:100%;
     background: var(--bg-color, #ffffff);
-    border-radius: 2cqw;
-    padding: 3cqw 3.4cqw 2.4cqw;
+    border-radius: var(--radius-inner, 2cqw);
+    padding: var(--inner-pad, 3cqw);
     display:flex; flex-direction:column;
     color: var(--text-color,#1a1a1a);
   }
-  .label-top{ display:flex; align-items:center; gap:2.6cqw; }
+  .label-top{ display:flex; align-items:center; gap:2.4cqw; }
 
   .badge-wrap{
     position:relative;
     flex:none;
-    width:15.5cqw; height:15.5cqw;
+    width:13.5cqw; height:13.5cqw;
     display:flex; align-items:center; justify-content:center;
   }
   .badge-shape{
@@ -137,28 +139,29 @@
   .badge-text{
     position:relative; z-index:1;
     color: var(--badge-text-color,#fff);
-    font-family: var(--font-heading);
+    font-family: var(--font-badge);
     font-weight:900;
-    font-size:2.55cqw;
-    line-height:1.18;
+    font-size:2.35cqw;
+    line-height:1.2;
     text-align:center;
     letter-spacing:.01em;
     max-width: 78%;
+    white-space:pre-line;
   }
 
   .heading-block{ min-width:0; flex:1; }
   .ruby{
     margin:0 0 .2cqw;
-    font-family: var(--font-body);
-    font-size:1.7cqw;
+    font-family: var(--font-ruby);
+    font-size:1.6cqw;
     color: color-mix(in srgb, var(--text-color,#1a1a1a) 62%, transparent);
     letter-spacing:.08em;
   }
   .title{
-    font-family: var(--font-heading);
+    font-family: var(--font-title);
     font-weight:900;
-    font-size:7.6cqw;
-    line-height:1.05;
+    font-size:7cqw;
+    line-height:1.08;
     letter-spacing:.01em;
     white-space:nowrap;
     overflow:hidden;
@@ -166,75 +169,76 @@
   }
   .subtitle{
     margin:.5cqw 0 0;
-    font-family: var(--font-latin);
-    font-size:3cqw;
+    font-family: var(--font-subtitle);
+    font-size:2.8cqw;
     letter-spacing:.04em;
     color: color-mix(in srgb, var(--text-color,#1a1a1a) 78%, transparent);
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
 
-  .divider{ flex:none; height:1.6cqw; margin:1.6cqw 0 1.2cqw; }
+  .divider{ flex:none; height:1.4cqw; margin:1.3cqw 0 1cqw; }
   .divider.dotted{
-    background-image: radial-gradient(circle, var(--frame-color,#f6de9e) 1.05cqw, transparent 1.15cqw);
-    background-size: 3.1cqw 1.6cqw;
+    background-image: radial-gradient(circle, var(--frame-color,#f6de9e) 1cqw, transparent 1.1cqw);
+    background-size: 3cqw 1.4cqw;
     background-position: center;
     background-repeat: repeat-x;
-    height:1.2cqw;
+    height:1.1cqw;
   }
   .divider.solid{
-    height:0; border-top:.28cqw solid var(--surface-line, #e7e0cf); margin:1.2cqw 0 1.4cqw;
+    height:0; border-top:.26cqw solid var(--surface-line, #e7e0cf); margin:1cqw 0 1.1cqw;
   }
 
-  .label-mid{ flex:1; display:flex; align-items:center; gap:3cqw; min-height:0; }
+  .label-mid{ flex:1; display:flex; align-items:center; gap:2.8cqw; }
   .desc{
     margin:0; flex:1; min-width:0;
-    font-family: var(--font-body);
-    font-size:2.5cqw;
+    font-family: var(--font-desc);
+    font-size:2.3cqw;
     line-height:1.5;
     color: color-mix(in srgb, var(--text-color,#1a1a1a) 88%, transparent);
     white-space:pre-line;
   }
-  .price-block{ flex:none; display:flex; align-items:center; gap:1.4cqw; }
+  .price-block{ flex:none; display:flex; align-items:center; gap:1.3cqw; }
   .price-main{
-    font-family: var(--font-latin);
+    font-family: var(--font-price);
     font-weight:700;
-    font-size:8.4cqw;
+    font-size:7.6cqw;
     line-height:1;
     color: var(--text-color,#1a1a1a);
     display:flex; align-items:baseline; gap:.3cqw;
     font-variant-numeric: tabular-nums;
   }
-  .price-main .yen{ font-family:var(--font-body); font-size:.42em; font-weight:700; }
+  .price-main .yen{ font-family:var(--font-desc); font-size:.42em; font-weight:700; }
   .tax-box{
     flex:none;
-    border:.22cqw solid var(--accent-color,#da2419);
+    border:.2cqw solid var(--accent-color,#da2419);
     border-radius:1cqw;
-    padding:.7cqw 1.1cqw;
-    display:flex; align-items:center; gap:.8cqw;
+    padding:.65cqw 1cqw;
+    display:flex; align-items:center; gap:.7cqw;
     color: var(--accent-color,#da2419);
   }
   .tax-label{
-    font-family: var(--font-latin);
-    font-size:1.35cqw;
+    font-family: var(--font-price);
+    font-size:1.25cqw;
     line-height:1.25;
     text-align:center;
     font-weight:700;
   }
-  .tax-label .jp{ font-family:var(--font-body); display:block; }
+  .tax-label .jp{ font-family:var(--font-desc); display:block; }
   .tax-num{
-    font-family: var(--font-latin);
+    font-family: var(--font-price);
     font-weight:700;
-    font-size:4.6cqw;
+    font-size:4.2cqw;
     line-height:1;
     display:flex; align-items:baseline; gap:.25cqw;
     font-variant-numeric: tabular-nums;
   }
-  .tax-num .yen{ font-family:var(--font-body); font-size:.45em; }
+  .tax-num .yen{ font-family:var(--font-desc); font-size:.45em; }
 
   .allergy{
     margin:0; flex:none;
-    font-family: var(--font-body);
-    font-size:1.95cqw;
+    font-family: var(--font-allergy);
+    font-size:1.85cqw;
+    line-height:1.4;
     color: color-mix(in srgb, var(--text-color,#1a1a1a) 82%, transparent);
   }
 
@@ -259,6 +263,7 @@
     font-family:'Space Mono',monospace; font-size:11px; font-weight:700;
   }
   .panel .hint{ margin:2px 0 14px; font-size:12.5px; color:var(--text-muted); }
+  .panel h3.sub{ font-size:12px; font-weight:700; color:var(--text-muted); letter-spacing:.03em; margin:16px 0 8px; }
 
   .chip-grid{ display:flex; flex-wrap:wrap; gap:8px; }
   .chip{
@@ -313,6 +318,12 @@
     width:100%; height:38px; border:1px solid var(--border); border-radius:var(--radius-sm);
     padding:2px; background:var(--surface); cursor:pointer;
   }
+
+  .slider-field{ display:flex; flex-direction:column; gap:6px; }
+  .slider-field .slider-row{ display:flex; align-items:center; gap:10px; }
+  .slider-field label{ font-size:12px; font-weight:600; color:var(--text-muted); display:flex; justify-content:space-between; }
+  .slider-field output{ font-family:'Space Mono',monospace; font-size:11.5px; color:var(--text); }
+  .slider-field input[type="range"]{ width:100%; accent-color:var(--accent); }
 
   .shape-row{ display:flex; gap:8px; }
   .shape-btn{
@@ -417,7 +428,7 @@
     </section>
 
     <section class="panel">
-      <h2><span class="num">2</span>カラー</h2>
+      <h2><span class="num">2</span>カラー・白枠</h2>
       <p class="hint">配色プリセット、または5色を個別に指定できます。</p>
       <div class="chip-grid" id="paletteGrid" style="margin-bottom:14px;"></div>
       <div class="field-grid">
@@ -427,7 +438,24 @@
         <div class="color-field"><label for="cAccent">価格の色</label><input type="color" id="cAccent"></div>
         <div class="color-field"><label for="cText">文字色</label><input type="color" id="cText"></div>
       </div>
-      <p class="hint" style="margin:14px 0 6px;">バッジの形</p>
+
+      <h3 class="sub">白枠の調整</h3>
+      <div class="field-grid">
+        <div class="slider-field">
+          <label for="lFrameThick">外枠の太さ<output id="lFrameThickVal">2.6</output></label>
+          <input type="range" id="lFrameThick" min="0" max="6" step="0.2" value="2.6">
+        </div>
+        <div class="slider-field">
+          <label for="lInnerPad">白背景の余白<output id="lInnerPadVal">3.0</output></label>
+          <input type="range" id="lInnerPad" min="1" max="7" step="0.2" value="3">
+        </div>
+        <div class="slider-field">
+          <label for="lRadius">角の丸み<output id="lRadiusVal">3.0</output></label>
+          <input type="range" id="lRadius" min="0" max="7" step="0.2" value="3">
+        </div>
+      </div>
+
+      <h3 class="sub">バッジの形</h3>
       <div class="shape-row" id="shapeRow">
         <button type="button" class="shape-btn" data-shape="circle" aria-pressed="true"><span class="shape-preview"></span>丸型</button>
         <button type="button" class="shape-btn" data-shape="burst" aria-pressed="false"><span class="shape-preview" style="clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);"></span>ギザギザ</button>
@@ -436,18 +464,16 @@
     </section>
 
     <section class="panel">
-      <h2><span class="num">3</span>フォント</h2>
-      <p class="hint">見出し・本文・英数字をそれぞれ選べます。</p>
+      <h2><span class="num">3</span>フォント（要素ごとに指定）</h2>
+      <p class="hint">日本語テキストと英数字テキストで選べる書体が分かれます。</p>
       <div class="field-grid">
-        <div class="field"><label for="fHeading">見出し（商品名）</label>
-          <select id="fHeading"></select>
-        </div>
-        <div class="field"><label for="fBody">本文（説明・注記）</label>
-          <select id="fBody"></select>
-        </div>
-        <div class="field"><label for="fLatin">英数字（英名・価格）</label>
-          <select id="fLatin"></select>
-        </div>
+        <div class="field"><label for="fTitle">商品名（見出し）</label><select id="fTitle"></select></div>
+        <div class="field"><label for="fBadge">バッジ文言</label><select id="fBadge"></select></div>
+        <div class="field"><label for="fRuby">ふりがな</label><select id="fRuby"></select></div>
+        <div class="field"><label for="fDesc">商品詳細（説明文）</label><select id="fDesc"></select></div>
+        <div class="field"><label for="fSubtitle">英語名</label><select id="fSubtitle"></select></div>
+        <div class="field"><label for="fPrice">価格の数字</label><select id="fPrice"></select></div>
+        <div class="field"><label for="fAllergy">アレルギー表示</label><select id="fAllergy"></select></div>
       </div>
     </section>
 
@@ -501,26 +527,35 @@
 (function(){
   "use strict";
 
-  var HEADING_FONTS = [
+  // Fonts capable of Japanese glyphs - used for badge / ruby / title / desc / allergy.
+  var JP_FONTS = [
     {id:"zenkaku",   label:"極太ゴシック",     family:"'Zen Kaku Gothic New', sans-serif"},
     {id:"dela",      label:"ポスターゴシック", family:"'Dela Gothic One', sans-serif"},
     {id:"reggae",    label:"丸太ゴシック",     family:"'Reggae One', sans-serif"},
     {id:"yusei",     label:"油性マジック風",   family:"'Yusei Magic', sans-serif"},
     {id:"hachimaru", label:"手書き丸文字",     family:"'Hachi Maru Pop', sans-serif"},
-    {id:"kaisei",    label:"和風セリフ",       family:"'Kaisei Decol', serif"}
+    {id:"kaisei",    label:"和風セリフ",       family:"'Kaisei Decol', serif"},
+    {id:"noto",      label:"Noto Sans JP",    family:"'Noto Sans JP', sans-serif"},
+    {id:"kosugi",    label:"コスギ丸",         family:"'Kosugi Maru', sans-serif"},
+    {id:"mplus",     label:"M+ 1p",           family:"'M PLUS 1p', sans-serif"}
   ];
-  var BODY_FONTS = [
-    {id:"zenkaku", label:"ゴシック標準",   family:"'Zen Kaku Gothic New', sans-serif"},
-    {id:"noto",    label:"Noto Sans JP",  family:"'Noto Sans JP', sans-serif"},
-    {id:"kosugi",  label:"コスギ丸",       family:"'Kosugi Maru', sans-serif"},
-    {id:"mplus",   label:"M+ 1p",         family:"'M PLUS 1p', sans-serif"}
-  ];
+  // Latin/numeral-only fonts - used for the English subtitle and price digits.
   var LATIN_FONTS = [
     {id:"spacemono",   label:"Space Mono",    family:"'Space Mono', monospace"},
     {id:"archivo",     label:"Archivo Black", family:"'Archivo Black', sans-serif"},
     {id:"staatliches", label:"Staatliches",   family:"'Staatliches', sans-serif"},
     {id:"oswald",      label:"Oswald",        family:"'Oswald', sans-serif"},
     {id:"bebas",       label:"Bebas Neue",    family:"'Bebas Neue', sans-serif"}
+  ];
+  var ALL_FONTS = JP_FONTS.concat(LATIN_FONTS);
+  var FONT_ROLES = [
+    {key:"title",    list:JP_FONTS},
+    {key:"badge",    list:JP_FONTS},
+    {key:"ruby",     list:JP_FONTS},
+    {key:"desc",     list:JP_FONTS},
+    {key:"subtitle", list:LATIN_FONTS},
+    {key:"price",    list:LATIN_FONTS},
+    {key:"allergy",  list:JP_FONTS}
   ];
 
   var ALLERGY_MANDATORY = ["卵","乳成分","小麦","そば","落花生","えび","かに","くるみ"];
@@ -536,69 +571,83 @@
     {id:"sale",    name:"セール（黒×金）", frame:"#232323", bg:"#141414", badge:"#f2c230", accent:"#f2c230", text:"#f5f0e3"}
   ];
 
+  // Each template's `fonts` maps every FONT_ROLES key to a font id from that role's list.
   var TEMPLATES = [
     {
       name:"期間限定", tag:"定番の季節POP",
       badge:"期間限定", ruby:"とうにゅう", title:"豆乳クリーム", subtitle:"Soybean Milk Cream",
       desc:"大人気商品!!国産大豆の\nコクを生かした、なめらかで\n甘さ控えめのクリームです。",
       price:204, taxRate:8, allergies:["卵","小麦","乳成分","大豆"],
-      palette:"classic", fonts:{heading:"zenkaku",body:"zenkaku",latin:"spacemono"}, shape:"circle"
+      palette:"classic", shape:"circle",
+      fonts:{title:"zenkaku", badge:"zenkaku", ruby:"zenkaku", desc:"zenkaku", subtitle:"spacemono", price:"spacemono", allergy:"zenkaku"}
     },
     {
       name:"数量限定", tag:"秋の栗スイーツ",
       badge:"数量限定", ruby:"くりきんとん", title:"栗きんとん", subtitle:"Chestnut Kinton",
       desc:"国産栗をふんだんに使用した、\n秋限定の贅沢な一品です。\n数量限定でのご提供となります。",
       price:258, taxRate:8, allergies:["乳成分"],
-      palette:"autumn", fonts:{heading:"kaisei",body:"noto",latin:"oswald"}, shape:"burst"
+      palette:"autumn", shape:"burst",
+      fonts:{title:"kaisei", badge:"kaisei", ruby:"noto", desc:"noto", subtitle:"oswald", price:"oswald", allergy:"noto"}
     },
     {
       name:"新商品", tag:"春の新作",
       badge:"新商品\nNEW", ruby:"さくらもち", title:"桜もち", subtitle:"Sakura Mochi",
       desc:"道明寺粉のもちもち食感と、\n桜葉の塩気が絶妙にマッチした\n春の新作です。",
       price:180, taxRate:8, allergies:[],
-      palette:"sakura", fonts:{heading:"hachimaru",body:"kosugi",latin:"bebas"}, shape:"ribbon"
+      palette:"sakura", shape:"ribbon",
+      fonts:{title:"hachimaru", badge:"hachimaru", ruby:"kosugi", desc:"kosugi", subtitle:"bebas", price:"bebas", allergy:"kosugi"}
     },
     {
       name:"本日のおすすめ", tag:"夏の冷たいスイーツ",
       badge:"本日の\nおすすめ", ruby:"かきごおり", title:"かき氷ソーダ", subtitle:"Soda Shaved Ice",
       desc:"暑い日にぴったり!\nふわふわ氷にサイダーシロップを\nたっぷりとかけました。",
       price:320, taxRate:10, allergies:[],
-      palette:"summer", fonts:{heading:"reggae",body:"zenkaku",latin:"archivo"}, shape:"burst"
+      palette:"summer", shape:"burst",
+      fonts:{title:"reggae", badge:"reggae", ruby:"zenkaku", desc:"zenkaku", subtitle:"archivo", price:"archivo", allergy:"zenkaku"}
     },
     {
       name:"クリスマス限定", tag:"冬季限定ケーキ",
       badge:"Xmas\n限定", ruby:"いちごの", title:"苺のショート", subtitle:"Strawberry Shortcake",
       desc:"厳選した苺と北海道産生クリームを\n使用したクリスマス限定の\nショートケーキです。",
       price:480, taxRate:8, allergies:["卵","小麦","乳成分"],
-      palette:"xmas", fonts:{heading:"dela",body:"noto",latin:"staatliches"}, shape:"ribbon"
+      palette:"xmas", shape:"ribbon",
+      fonts:{title:"dela", badge:"dela", ruby:"noto", desc:"noto", subtitle:"staatliches", price:"staatliches", allergy:"noto"}
     },
     {
       name:"セール品", tag:"お買い得セット",
       badge:"SALE", ruby:"やきがし", title:"焼き菓子詰め合わせ", subtitle:"Baked Sweets Set",
       desc:"販売終了間近!\n人気の焼き菓子を詰め合わせた、\nお得なセットです。お早めに。",
       price:500, taxRate:10, allergies:["卵","小麦","乳成分","大豆"],
-      palette:"sale", fonts:{heading:"yusei",body:"mplus",latin:"spacemono"}, shape:"circle"
+      palette:"sale", shape:"circle",
+      fonts:{title:"yusei", badge:"yusei", ruby:"mplus", desc:"mplus", subtitle:"spacemono", price:"spacemono", allergy:"mplus"}
     }
   ];
+
+  var DEFAULT_LAYOUT = {frameThickness:2.6, innerPadding:3, cornerRadius:3};
 
   var state = null;
   var els = {};
   ["label","badgeWrap","badgeShape","badgeText","rubyOut","titleOut","subtitleOut",
    "descOut","priceOut","taxPriceOut","allergyOut","tplGrid","paletteGrid",
-   "cFrame","cBg","cBadge","cAccent","cText","shapeRow","fHeading","fBody","fLatin",
+   "cFrame","cBg","cBadge","cAccent","cText","shapeRow",
+   "fTitle","fBadge","fRuby","fDesc","fSubtitle","fPrice","fAllergy",
+   "lFrameThick","lFrameThickVal","lInnerPad","lInnerPadVal","lRadius","lRadiusVal",
    "iBadge","iRuby","iTitle","iSubtitle","iDesc","iPrice","iTaxRate","taxReadout",
    "iAllergyPrefix","allergyMandatory","allergyRecommended","allergyPreviewText",
    "exportBtn","printBtn","randomBtn","statusOut"
   ].forEach(function(id){ els[id] = document.getElementById(id); });
 
-  function cloneTemplate(t){
+  function cloneTemplate(t, keepLayout){
+    var fonts = {};
+    FONT_ROLES.forEach(function(r){ fonts[r.key] = t.fonts[r.key]; });
     return {
       badge:t.badge, ruby:t.ruby, title:t.title, subtitle:t.subtitle, desc:t.desc,
       price:t.price, taxRate:t.taxRate, allergies:t.allergies.slice(),
       allergyPrefix:"【アレルギー表示 28品目】",
       colors: (function(){ var p=paletteById(t.palette); return {frame:p.frame,bg:p.bg,badge:p.badge,accent:p.accent,text:p.text}; })(),
-      fonts:{heading:t.fonts.heading, body:t.fonts.body, latin:t.fonts.latin},
-      shape:t.shape
+      fonts: fonts,
+      shape:t.shape,
+      layout: keepLayout ? keepLayout : Object.assign({}, DEFAULT_LAYOUT)
     };
   }
   function paletteById(id){ for(var i=0;i<PALETTES.length;i++){ if(PALETTES[i].id===id) return PALETTES[i]; } return PALETTES[0]; }
@@ -611,9 +660,9 @@
       sel.appendChild(o);
     });
   }
-  function fontFamily(list, id){
-    for(var i=0;i<list.length;i++){ if(list[i].id===id) return list[i].family; }
-    return list[0].family;
+  function fontFamily(id){
+    for(var i=0;i<ALL_FONTS.length;i++){ if(ALL_FONTS[i].id===id) return ALL_FONTS[i].family; }
+    return ALL_FONTS[0].family;
   }
 
   function getContrastText(hex){
@@ -701,6 +750,14 @@
       });
     });
   }
+  function syncLayoutInputs(){
+    els.lFrameThick.value = state.layout.frameThickness;
+    els.lFrameThickVal.textContent = state.layout.frameThickness.toFixed(1);
+    els.lInnerPad.value = state.layout.innerPadding;
+    els.lInnerPadVal.textContent = state.layout.innerPadding.toFixed(1);
+    els.lRadius.value = state.layout.cornerRadius;
+    els.lRadiusVal.textContent = state.layout.cornerRadius.toFixed(1);
+  }
   function syncInputsFromState(){
     els.iBadge.value = state.badge;
     els.iRuby.value = state.ruby;
@@ -710,16 +767,17 @@
     els.iPrice.value = state.price;
     els.iTaxRate.value = String(state.taxRate);
     els.iAllergyPrefix.value = state.allergyPrefix;
-    els.fHeading.value = state.fonts.heading;
-    els.fBody.value = state.fonts.body;
-    els.fLatin.value = state.fonts.latin;
+    FONT_ROLES.forEach(function(r){ els["f"+capitalize(r.key)].value = state.fonts[r.key]; });
     syncColorInputs();
     syncShapeButtons();
     syncAllergyChips();
+    syncLayoutInputs();
   }
+  function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
 
   function applyTemplate(idx){
-    state = cloneTemplate(TEMPLATES[idx]);
+    var keepLayout = state ? state.layout : null;
+    state = cloneTemplate(TEMPLATES[idx], keepLayout);
     syncInputsFromState();
     render();
   }
@@ -734,9 +792,14 @@
     label.style.setProperty("--badge-text-color", getContrastText(state.colors.badge));
     label.style.setProperty("--surface-line", getContrastText(state.colors.bg)==="#1a1a1a" ? "rgba(0,0,0,.14)" : "rgba(255,255,255,.2)");
 
-    label.style.setProperty("--font-heading", fontFamily(HEADING_FONTS, state.fonts.heading));
-    label.style.setProperty("--font-body", fontFamily(BODY_FONTS, state.fonts.body));
-    label.style.setProperty("--font-latin", fontFamily(LATIN_FONTS, state.fonts.latin));
+    FONT_ROLES.forEach(function(r){
+      label.style.setProperty("--font-"+r.key, fontFamily(state.fonts[r.key]));
+    });
+
+    label.style.setProperty("--frame-thick", state.layout.frameThickness+"cqw");
+    label.style.setProperty("--inner-pad", state.layout.innerPadding+"cqw");
+    label.style.setProperty("--radius-outer", state.layout.cornerRadius+"cqw");
+    label.style.setProperty("--radius-inner", (state.layout.cornerRadius*0.6)+"cqw");
 
     els.badgeWrap.setAttribute("data-shape", state.shape);
     els.badgeText.textContent = state.badge;
@@ -778,9 +841,13 @@
       els[id].addEventListener("input", function(){ state.colors[key] = this.value; render(); });
     });
 
-    els.fHeading.addEventListener("change", function(){ state.fonts.heading = this.value; render(); });
-    els.fBody.addEventListener("change", function(){ state.fonts.body = this.value; render(); });
-    els.fLatin.addEventListener("change", function(){ state.fonts.latin = this.value; render(); });
+    FONT_ROLES.forEach(function(r){
+      els["f"+capitalize(r.key)].addEventListener("change", function(){ state.fonts[r.key] = this.value; render(); });
+    });
+
+    els.lFrameThick.addEventListener("input", function(){ state.layout.frameThickness = Number(this.value); render(); syncLayoutInputs(); });
+    els.lInnerPad.addEventListener("input", function(){ state.layout.innerPadding = Number(this.value); render(); syncLayoutInputs(); });
+    els.lRadius.addEventListener("input", function(){ state.layout.cornerRadius = Number(this.value); render(); syncLayoutInputs(); });
 
     Array.prototype.forEach.call(els.shapeRow.children, function(b){
       b.addEventListener("click", function(){ state.shape = b.dataset.shape; render(); });
@@ -799,9 +866,9 @@
     state.colors = {frame:palette.frame, bg:palette.bg, badge:palette.badge, accent:palette.accent, text:palette.text};
     var shapes = ["circle","burst","ribbon"];
     state.shape = shapes[Math.floor(Math.random()*shapes.length)];
-    state.fonts.heading = HEADING_FONTS[Math.floor(Math.random()*HEADING_FONTS.length)].id;
-    state.fonts.body = BODY_FONTS[Math.floor(Math.random()*BODY_FONTS.length)].id;
-    state.fonts.latin = LATIN_FONTS[Math.floor(Math.random()*LATIN_FONTS.length)].id;
+    FONT_ROLES.forEach(function(r){
+      state.fonts[r.key] = r.list[Math.floor(Math.random()*r.list.length)].id;
+    });
     syncInputsFromState();
     render();
   }
@@ -860,9 +927,7 @@
   }
 
   // init
-  fillSelect(els.fHeading, HEADING_FONTS);
-  fillSelect(els.fBody, BODY_FONTS);
-  fillSelect(els.fLatin, LATIN_FONTS);
+  FONT_ROLES.forEach(function(r){ fillSelect(els["f"+capitalize(r.key)], r.list); });
   buildTemplateCards();
   buildPaletteChips();
   buildAllergyChips();
