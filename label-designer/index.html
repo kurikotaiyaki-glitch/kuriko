@@ -480,11 +480,8 @@
     <section class="panel">
       <h2><span class="num">4</span>テキスト</h2>
       <div class="field-grid">
-        <div class="field"><label for="iBadgeLine1">バッジ文言（1行目）</label>
-          <input type="text" id="iBadgeLine1" value="期間限定">
-        </div>
-        <div class="field"><label for="iBadgeLine2">バッジ文言（2行目・任意）</label>
-          <input type="text" id="iBadgeLine2" value="">
+        <div class="field wide"><label for="iBadge">バッジ文言（Enterで2行目）</label>
+          <textarea id="iBadge" rows="2">期間限定</textarea>
         </div>
         <div class="field"><label for="iRuby">ふりがな</label><input type="text" id="iRuby" value="とうにゅう"></div>
         <div class="field"><label for="iTitle">商品名</label><input type="text" id="iTitle" value="豆乳クリーム"></div>
@@ -635,7 +632,7 @@
    "cFrame","cBg","cBadge","cAccent","cText","shapeRow",
    "fTitle","fBadge","fRuby","fDesc","fSubtitle","fPrice","fAllergy",
    "lFrameThick","lFrameThickVal","lInnerPad","lInnerPadVal","lRadius","lRadiusVal",
-   "iBadgeLine1","iBadgeLine2","iRuby","iTitle","iSubtitle","iDesc","iPrice","iTaxRate","taxReadout",
+   "iBadge","iRuby","iTitle","iSubtitle","iDesc","iPrice","iTaxRate","taxReadout",
    "iAllergyPrefix","allergyMandatory","allergyRecommended","allergyPreviewText",
    "exportBtn","printBtn","randomBtn","statusOut"
   ].forEach(function(id){ els[id] = document.getElementById(id); });
@@ -643,10 +640,8 @@
   function cloneTemplate(t, keepLayout){
     var fonts = {};
     FONT_ROLES.forEach(function(r){ fonts[r.key] = t.fonts[r.key]; });
-    var badgeLines = t.badge.split("\n");
     return {
-      badgeLine1:badgeLines[0]||"", badgeLine2:badgeLines[1]||"",
-      ruby:t.ruby, title:t.title, subtitle:t.subtitle, desc:t.desc,
+      badge:t.badge, ruby:t.ruby, title:t.title, subtitle:t.subtitle, desc:t.desc,
       price:t.price, taxRate:t.taxRate, allergies:t.allergies.slice(),
       allergyPrefix:"【アレルギー表示 28品目】",
       colors: (function(){ var p=paletteById(t.palette); return {frame:p.frame,bg:p.bg,badge:p.badge,accent:p.accent,text:p.text}; })(),
@@ -764,8 +759,7 @@
     els.lRadiusVal.textContent = state.layout.cornerRadius.toFixed(1);
   }
   function syncInputsFromState(){
-    els.iBadgeLine1.value = state.badgeLine1;
-    els.iBadgeLine2.value = state.badgeLine2;
+    els.iBadge.value = state.badge;
     els.iRuby.value = state.ruby;
     els.iTitle.value = state.title;
     els.iSubtitle.value = state.subtitle;
@@ -808,7 +802,7 @@
     label.style.setProperty("--radius-inner", (state.layout.cornerRadius*0.6)+"cqw");
 
     els.badgeWrap.setAttribute("data-shape", state.shape);
-    els.badgeText.textContent = state.badgeLine2 ? state.badgeLine1+"\n"+state.badgeLine2 : state.badgeLine1;
+    els.badgeText.textContent = state.badge;
 
     els.rubyOut.textContent = state.ruby;
     els.rubyOut.hidden = !state.ruby;
@@ -833,8 +827,7 @@
   }
 
   function bindInputs(){
-    els.iBadgeLine1.addEventListener("input", function(){ state.badgeLine1 = this.value; render(); });
-    els.iBadgeLine2.addEventListener("input", function(){ state.badgeLine2 = this.value; render(); });
+    els.iBadge.addEventListener("input", function(){ state.badge = this.value; render(); });
     els.iRuby.addEventListener("input", function(){ state.ruby = this.value; render(); });
     els.iTitle.addEventListener("input", function(){ state.title = this.value; render(); });
     els.iSubtitle.addEventListener("input", function(){ state.subtitle = this.value; render(); });
