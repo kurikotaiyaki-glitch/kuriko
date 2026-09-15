@@ -121,10 +121,13 @@
   }
   .label-top{ display:flex; align-items:center; gap:2.4cqw; }
 
+  /* Nudges use transforms so moving a piece never reflows the rest of the label. */
   .badge-wrap{
     position:relative;
     flex:none;
-    width:13.5cqw; height:13.5cqw;
+    width: calc(13.5cqw * var(--badge-scale,1));
+    height: calc(13.5cqw * var(--badge-scale,1));
+    transform: translate(var(--badge-x,0px), var(--badge-y,0px));
     display:flex; align-items:center; justify-content:center;
   }
   .badge-shape{
@@ -159,6 +162,7 @@
     font-weight:900;
     font-size: calc(7cqw * var(--scale-title,1));
     text-align: var(--align-title, left);
+    transform: translate(var(--title-x,0px), var(--title-y,0px));
     line-height:1.08;
     letter-spacing:.01em;
     overflow-wrap:anywhere;
@@ -556,6 +560,23 @@
       <div class="allergy-line-preview" id="allergyPreviewText"></div>
     </section>
 
+    <section class="panel">
+      <h2><span class="num">6</span>位置の微調整</h2>
+      <p class="hint">数値は白枠の幅に対する％です。0が標準の位置で、マイナスにすると左・上へ動きます。</p>
+      <h3 class="sub">商品名</h3>
+      <div class="field-grid">
+        <div class="field"><label for="posTitleX">左右位置</label><input type="number" id="posTitleX" step="0.5" min="-40" max="40" value="0"></div>
+        <div class="field"><label for="posTitleY">上下位置</label><input type="number" id="posTitleY" step="0.5" min="-20" max="20" value="0"></div>
+      </div>
+      <h3 class="sub">バッジ（丸）</h3>
+      <div class="field-grid">
+        <div class="field"><label for="posBadgeSize">大きさ（%）</label><input type="number" id="posBadgeSize" step="5" min="20" max="300" value="100"></div>
+        <div class="field"><label for="posBadgeX">左右位置</label><input type="number" id="posBadgeX" step="0.5" min="-40" max="40" value="0"></div>
+        <div class="field"><label for="posBadgeY">上下位置</label><input type="number" id="posBadgeY" step="0.5" min="-20" max="20" value="0"></div>
+      </div>
+      <p class="hint" style="margin:14px 0 0;">バッジ内の文字の大きさは「書式」のバッジ文言で調整できます。</p>
+    </section>
+
   </div>
 </div>
 
@@ -662,6 +683,17 @@
 
   var DEFAULT_INNER_PAD = 0.8;
 
+  // Fine positioning. `factor` converts between the number shown in the box and
+  // the value kept in state (badge size is a multiplier shown as a percentage).
+  var POS_INPUTS = [
+    {id:"posTitleX",    key:"titleX",    min:-40, max:40,  factor:1},
+    {id:"posTitleY",    key:"titleY",    min:-20, max:20,  factor:1},
+    {id:"posBadgeSize", key:"badgeSize", min:20,  max:300, factor:100},
+    {id:"posBadgeX",    key:"badgeX",    min:-40, max:40,  factor:1},
+    {id:"posBadgeY",    key:"badgeY",    min:-20, max:20,  factor:1}
+  ];
+  function defaultPos(){ return {titleX:0, titleY:0, badgeSize:1, badgeX:0, badgeY:0}; }
+
   var state = null;
   var fmtControls = {};   // key -> {font, size, align}
   var els = {};
@@ -672,6 +704,7 @@
    "iBadge","iRuby","iTitle","iSubtitle","iDesc","iPrice","iTaxRate","taxReadout",
    "iAllergyPrefix","allergyMandatory","allergyRecommended","allergyPreviewText",
    "allergyAddRow","allergyAddInput","allergyAddCommit",
+   "posTitleX","posTitleY","posBadgeSize","posBadgeX","posBadgeY",
    "exportBtn","printBtn","randomBtn","statusOut","kanteiryuNote"
   ].forEach(function(id){ els[id] = document.getElementById(id); });
 
@@ -701,6 +734,7 @@
       sizes: carry ? carry.sizes : defaultSizes(),
       aligns: carry ? carry.aligns : defaultAligns(),
       innerPad: carry ? carry.innerPad : DEFAULT_INNER_PAD,
+      pos: carry ? carry.pos : defaultPos(),
       customAllergies: carry ? carry.customAllergies : []
     };
   }
@@ -943,6 +977,13 @@
       if(c.align) c.align.setAttribute("aria-pressed", String(state.aligns[e.key] === "center"));
     });
   }
+  function syncPosInputs(){
+    POS_INPUTS.forEach(function(f){
+      var el = els[f.id];
+      if(document.activeElement === el) return;   // don't fight the box being typed in
+      el.value = String(+(state.pos[f.key] * f.factor).toFixed(1));
+    });
+  }
   function syncInputsFromState(){
     els.iBadge.value = state.badge;
     els.iRuby.value = state.ruby;
@@ -957,6 +998,7 @@
     syncColorInputs();
     syncFormatControls();
     syncAllergyChips();
+    syncPosInputs();
   }
 
   function applyTemplate(idx){
@@ -977,6 +1019,11 @@
     label.style.setProperty("--surface-line", getContrastText(state.colors.bg)==="#1a1a1a" ? "rgba(0,0,0,.14)" : "rgba(255,255,255,.2)");
     label.style.setProperty("--inner-pad", state.innerPad+"cqw");
     label.style.setProperty("--tax-word-gap", isMonoFont(state.fonts.price) ? ".1em" : ".26em");
+    label.style.setProperty("--title-x", state.pos.titleX+"cqw");
+    label.style.setProperty("--title-y", state.pos.titleY+"cqw");
+    label.style.setProperty("--badge-scale", state.pos.badgeSize);
+    label.style.setProperty("--badge-x", state.pos.badgeX+"cqw");
+    label.style.setProperty("--badge-y", state.pos.badgeY+"cqw");
 
     TEXT_ELEMENTS.forEach(function(e){
       label.style.setProperty("--font-"+e.key, fontFamily(state.fonts[e.key]));
@@ -1029,6 +1076,19 @@
       state.innerPad = Number(this.value);
       els.lInnerPadVal.textContent = state.innerPad.toFixed(1);
       render();
+    });
+
+    POS_INPUTS.forEach(function(f){
+      var el = els[f.id];
+      el.addEventListener("input", function(){
+        var v = parseFloat(this.value);
+        if(!isFinite(v)) return;   // mid-typing ("-", "") keeps the last good value
+        state.pos[f.key] = Math.min(f.max, Math.max(f.min, v)) / f.factor;
+        render();
+      });
+      el.addEventListener("blur", function(){
+        this.value = String(+(state.pos[f.key] * f.factor).toFixed(1));
+      });
     });
 
     els.allergyAddCommit.addEventListener("click", addCustomAllergen);
