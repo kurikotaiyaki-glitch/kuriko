@@ -55,6 +55,7 @@
   }
 
   *,*::before,*::after{ box-sizing:border-box; }
+  [hidden]{ display:none !important; }
   body{
     margin:0;
     background:var(--bg);
@@ -98,23 +99,23 @@
 
   /* ---------- label artwork ---------- */
   /* Sized with container-query units (cqw) off #label's own inline size, and
-     height is intentionally auto (content-driven) so no combination of
-     longer text / thicker frame / more allergens can ever overlap or clip. */
+     height is intentionally auto (content-driven) so no combination of longer
+     text, bigger type or more allergens can overlap or clip. */
   #label{
     container-type: inline-size;
     container-name: label;
     width:100%;
-    border-radius: var(--radius-outer, 3.2cqw);
+    border-radius:0;
     background: var(--frame-color, #f6de9e);
-    padding: var(--frame-thick, 2.6cqw);
+    padding: 0.8cqw;
     box-shadow: 0 2px 0 rgba(0,0,0,.04), 0 18px 30px -20px rgba(20,12,4,.45);
   }
   .label-inner{
     position:relative;
     width:100%;
     background: var(--bg-color, #ffffff);
-    border-radius: var(--radius-inner, 2cqw);
-    padding: var(--inner-pad, 3cqw);
+    border-radius:0;
+    padding: var(--inner-pad, 2cqw);
     display:flex; flex-direction:column;
     color: var(--text-color,#1a1a1a);
   }
@@ -128,24 +129,19 @@
   }
   .badge-shape{
     position:absolute; inset:0;
+    border-radius:50%;
     background: var(--badge-color,#da2419);
   }
-  .badge-wrap[data-shape="circle"] .badge-shape{ border-radius:50%; clip-path:none; }
-  .badge-wrap[data-shape="ribbon"] .badge-shape{
-    border-radius: 18%;
-    clip-path: polygon(9% 0%,91% 0%,100% 50%,91% 100%,9% 100%,0% 50%);
-  }
-  .badge-wrap[data-shape="burst"] .badge-shape{ border-radius:0; }
   .badge-text{
     position:relative; z-index:1;
     color: var(--badge-text-color,#fff);
     font-family: var(--font-badge);
     font-weight:900;
-    font-size:2.35cqw;
+    font-size: calc(2.35cqw * var(--scale-badge,1));
     line-height:1.2;
     text-align:center;
     letter-spacing:.01em;
-    max-width: 78%;
+    max-width: 82%;
     white-space:pre-line;
   }
 
@@ -153,27 +149,28 @@
   .ruby{
     margin:0 0 .2cqw;
     font-family: var(--font-ruby);
-    font-size:1.6cqw;
+    font-size: calc(1.6cqw * var(--scale-ruby,1));
+    text-align: var(--align-ruby, left);
     color: color-mix(in srgb, var(--text-color,#1a1a1a) 62%, transparent);
     letter-spacing:.08em;
   }
   .title{
     font-family: var(--font-title);
     font-weight:900;
-    font-size:7cqw;
+    font-size: calc(7cqw * var(--scale-title,1));
+    text-align: var(--align-title, left);
     line-height:1.08;
     letter-spacing:.01em;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
+    overflow-wrap:anywhere;
   }
   .subtitle{
     margin:.5cqw 0 0;
     font-family: var(--font-subtitle);
-    font-size:2.8cqw;
+    font-size: calc(2.8cqw * var(--scale-subtitle,1));
+    text-align: var(--align-subtitle, left);
     letter-spacing:.04em;
     color: color-mix(in srgb, var(--text-color,#1a1a1a) 78%, transparent);
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    overflow-wrap:anywhere;
   }
 
   .divider{ flex:none; height:1.4cqw; margin:1.3cqw 0 1cqw; }
@@ -192,7 +189,8 @@
   .desc{
     margin:0; flex:1; min-width:0;
     font-family: var(--font-desc);
-    font-size:2.3cqw;
+    font-size: calc(2.3cqw * var(--scale-desc,1));
+    text-align: var(--align-desc, left);
     line-height:1.5;
     color: color-mix(in srgb, var(--text-color,#1a1a1a) 88%, transparent);
     white-space:pre-line;
@@ -201,7 +199,7 @@
   .price-main{
     font-family: var(--font-price);
     font-weight:700;
-    font-size:7.6cqw;
+    font-size: calc(7.6cqw * var(--scale-price,1));
     line-height:1;
     color: var(--text-color,#1a1a1a);
     display:flex; align-items:baseline; gap:.3cqw;
@@ -218,7 +216,7 @@
   }
   .tax-label{
     font-family: var(--font-price);
-    font-size:1.25cqw;
+    font-size: calc(1.25cqw * var(--scale-price,1));
     line-height:1.25;
     text-align:center;
     font-weight:700;
@@ -227,7 +225,7 @@
   .tax-num{
     font-family: var(--font-price);
     font-weight:700;
-    font-size:4.2cqw;
+    font-size: calc(4.2cqw * var(--scale-price,1));
     line-height:1;
     display:flex; align-items:baseline; gap:.25cqw;
     font-variant-numeric: tabular-nums;
@@ -237,7 +235,8 @@
   .allergy{
     margin:0; flex:none;
     font-family: var(--font-allergy);
-    font-size:1.85cqw;
+    font-size: calc(1.85cqw * var(--scale-allergy,1));
+    text-align: var(--align-allergy, left);
     line-height:1.4;
     color: color-mix(in srgb, var(--text-color,#1a1a1a) 82%, transparent);
   }
@@ -265,7 +264,7 @@
   .panel .hint{ margin:2px 0 14px; font-size:12.5px; color:var(--text-muted); }
   .panel h3.sub{ font-size:12px; font-weight:700; color:var(--text-muted); letter-spacing:.03em; margin:16px 0 8px; }
 
-  .chip-grid{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip-grid{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
   .chip{
     appearance:none; border:1px solid var(--border); background:var(--surface-2);
     color:var(--text); border-radius:999px; padding:7px 13px;
@@ -278,6 +277,25 @@
     background:var(--accent); border-color:var(--accent); color:#fff; font-weight:700;
   }
   .chip .swatch{ width:12px; height:12px; border-radius:50%; flex:none; box-shadow:inset 0 0 0 1px rgba(0,0,0,.15); }
+  .chip .chip-x{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:16px; height:16px; margin-right:-4px; border-radius:50%;
+    font-size:13px; line-height:1; opacity:.6;
+  }
+  .chip .chip-x:hover{ opacity:1; background:rgba(0,0,0,.12); }
+  .chip-add{ border-style:dashed; color:var(--accent-strong); font-weight:700; }
+
+  .allergy-add-row{ display:flex; gap:8px; margin-top:10px; }
+  .allergy-add-row input{
+    flex:1; min-width:0; border:1px solid var(--border); background:var(--surface);
+    color:var(--text); border-radius:var(--radius-sm); padding:8px 10px;
+    font-family:inherit; font-size:13px;
+  }
+  .btn-sm{
+    appearance:none; border:1px solid var(--accent); background:var(--accent); color:#fff;
+    border-radius:var(--radius-sm); padding:8px 14px; font-family:inherit;
+    font-size:12.5px; font-weight:700; cursor:pointer;
+  }
 
   .tpl-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(148px,1fr)); gap:10px; }
   .tpl-card{
@@ -319,23 +337,42 @@
     padding:2px; background:var(--surface); cursor:pointer;
   }
 
-  .slider-field{ display:flex; flex-direction:column; gap:6px; }
-  .slider-field .slider-row{ display:flex; align-items:center; gap:10px; }
-  .slider-field label{ font-size:12px; font-weight:600; color:var(--text-muted); display:flex; justify-content:space-between; }
+  .slider-field{ display:flex; flex-direction:column; gap:6px; max-width:280px; }
+  .slider-field label{ font-size:12px; font-weight:600; color:var(--text-muted); display:flex; justify-content:space-between; gap:10px; }
   .slider-field output{ font-family:'Space Mono',monospace; font-size:11.5px; color:var(--text); }
   .slider-field input[type="range"]{ width:100%; accent-color:var(--accent); }
 
-  .shape-row{ display:flex; gap:8px; }
-  .shape-btn{
-    flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;
-    border:1px solid var(--border); background:var(--surface-2); border-radius:var(--radius-sm);
-    padding:10px 6px 9px; cursor:pointer; font-family:inherit; color:var(--text); font-size:11.5px;
+  /* per-element format rows: font / size / centering */
+  .fmt-head, .fmt-row{
+    display:grid;
+    grid-template-columns: minmax(84px,1fr) minmax(104px,1.25fr) 90px 66px;
+    gap:8px; align-items:center;
   }
-  .shape-btn:hover{ border-color:var(--accent); }
-  .shape-btn[aria-pressed="true"]{ border-color:var(--accent); background:var(--accent-soft); font-weight:700; }
-  .shape-preview{ width:26px; height:26px; background:var(--accent-strong); }
-  .shape-btn[data-shape="circle"] .shape-preview{ border-radius:50%; }
-  .shape-btn[data-shape="ribbon"] .shape-preview{ border-radius:6px; clip-path:polygon(10% 0%,90% 0%,100% 50%,90% 100%,10% 100%,0% 50%); }
+  .fmt-head{ padding-bottom:6px; }
+  .fmt-head span{ font-size:11px; font-weight:700; color:var(--text-muted); letter-spacing:.03em; }
+  .fmt-row{ padding:7px 0; border-top:1px solid var(--border); }
+  .fmt-name{ font-size:12.5px; font-weight:600; }
+  .fmt-row select{
+    width:100%; border:1px solid var(--border); background:var(--surface);
+    color:var(--text); border-radius:var(--radius-sm); padding:7px 8px;
+    font-family:inherit; font-size:12.5px;
+  }
+  .fmt-row select:focus-visible{ outline:2px solid var(--focus); outline-offset:1px; }
+  .fmt-align{
+    appearance:none; cursor:pointer; width:100%;
+    border:1px solid var(--border); background:var(--surface-2); color:var(--text);
+    border-radius:var(--radius-sm); padding:7px 4px;
+    font-family:inherit; font-size:12px; font-weight:600;
+  }
+  .fmt-align:hover{ border-color:var(--accent); }
+  .fmt-align[aria-pressed="true"]{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .fmt-align:focus-visible{ outline:2px solid var(--focus); outline-offset:1px; }
+  .fmt-none{ text-align:center; font-size:12px; color:var(--text-muted); }
+  @media (max-width:560px){
+    .fmt-head{ display:none; }
+    .fmt-row{ grid-template-columns: 1fr 90px 66px; }
+    .fmt-name{ grid-column:1 / -1; color:var(--text-muted); }
+  }
 
   .font-note{
     margin:12px 0 0; padding:9px 12px; border-radius:var(--radius-sm);
@@ -385,34 +422,34 @@
 <div class="layout">
   <div class="stage">
     <div class="stage-card">
-      <div id="label" data-shape="circle">
+      <div id="label">
         <div class="label-inner" id="labelInner">
           <div class="label-top">
-            <div class="badge-wrap" id="badgeWrap" data-shape="circle">
-              <div class="badge-shape" id="badgeShape"></div>
-              <div class="badge-text" id="badgeText">期間限定</div>
+            <div class="badge-wrap" id="badgeWrap">
+              <div class="badge-shape"></div>
+              <div class="badge-text" id="badgeText">定番</div>
             </div>
             <div class="heading-block">
-              <p class="ruby" id="rubyOut">とうにゅう</p>
-              <h2 class="title" id="titleOut">豆乳クリーム</h2>
-              <p class="subtitle" id="subtitleOut">Soybean Milk Cream</p>
+              <p class="ruby" id="rubyOut">くりまんじゅう</p>
+              <h2 class="title" id="titleOut">栗まんじゅう</h2>
+              <p class="subtitle" id="subtitleOut">Chestnut Manju</p>
             </div>
           </div>
           <div class="divider dotted"></div>
           <div class="label-mid">
-            <p class="desc" id="descOut">大人気商品!!国産大豆の
-コクを生かした、なめらかで
-甘さ控えめのクリームです。</p>
+            <p class="desc" id="descOut">しっとり生地に自家製の栗あんを
+包み込んで焼き上げた、
+創業以来の看板商品です。</p>
             <div class="price-block">
-              <div class="price-main"><span id="priceOut">204</span><span class="yen">円</span></div>
+              <div class="price-main"><span id="priceOut">162</span><span class="yen">円</span></div>
               <div class="tax-box">
                 <span class="tax-label">Tax in<span class="jp">税込</span></span>
-                <span class="tax-num"><span id="taxPriceOut">220</span><span class="yen">円</span></span>
+                <span class="tax-num"><span id="taxPriceOut">174</span><span class="yen">円</span></span>
               </div>
             </div>
           </div>
           <div class="divider solid"></div>
-          <p class="allergy" id="allergyOut">【アレルギー表示 28品目】 卵・小麦・乳成分・大豆</p>
+          <p class="allergy" id="allergyOut">【アレルギー表示 29品目】 卵・乳成分・小麦</p>
         </div>
       </div>
     </div>
@@ -429,7 +466,7 @@
 
     <section class="panel">
       <h2><span class="num">1</span>テンプレートから選ぶ</h2>
-      <p class="hint">クリックで文字色まで一括反映。あとは自由に書き換えてOKです。</p>
+      <p class="hint">クリックで文字も色も一括反映。あとは自由に書き換えてOKです。</p>
       <div class="tpl-grid" id="tplGrid"></div>
     </section>
 
@@ -446,66 +483,44 @@
       </div>
 
       <h3 class="sub">白枠の調整</h3>
-      <div class="field-grid">
-        <div class="slider-field">
-          <label for="lFrameThick">外枠の太さ<output id="lFrameThickVal">1.0</output></label>
-          <input type="range" id="lFrameThick" min="0" max="6" step="0.2" value="1">
-        </div>
-        <div class="slider-field">
-          <label for="lInnerPad">白背景の余白<output id="lInnerPadVal">2.0</output></label>
-          <input type="range" id="lInnerPad" min="1" max="7" step="0.2" value="2">
-        </div>
-        <div class="slider-field">
-          <label for="lRadius">角の丸み<output id="lRadiusVal">0.0</output></label>
-          <input type="range" id="lRadius" min="0" max="7" step="0.2" value="0">
-        </div>
-      </div>
-
-      <h3 class="sub">バッジの形</h3>
-      <div class="shape-row" id="shapeRow">
-        <button type="button" class="shape-btn" data-shape="circle" aria-pressed="true"><span class="shape-preview"></span>丸型</button>
-        <button type="button" class="shape-btn" data-shape="burst" aria-pressed="false"><span class="shape-preview" style="clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);"></span>ギザギザ</button>
-        <button type="button" class="shape-btn" data-shape="ribbon" aria-pressed="false"><span class="shape-preview"></span>リボン</button>
+      <div class="slider-field">
+        <label for="lInnerPad">白背景の余白<output id="lInnerPadVal">2.0</output></label>
+        <input type="range" id="lInnerPad" min="1" max="7" step="0.2" value="2">
       </div>
     </section>
 
     <section class="panel">
-      <h2><span class="num">3</span>フォント（要素ごとに指定）</h2>
-      <p class="hint">日本語テキストと英数字テキストで選べる書体が分かれます。</p>
-      <div class="field-grid">
-        <div class="field"><label for="fTitle">商品名（見出し）</label><select id="fTitle"></select></div>
-        <div class="field"><label for="fBadge">バッジ文言</label><select id="fBadge"></select></div>
-        <div class="field"><label for="fRuby">ふりがな</label><select id="fRuby"></select></div>
-        <div class="field"><label for="fDesc">商品詳細（説明文）</label><select id="fDesc"></select></div>
-        <div class="field"><label for="fSubtitle">英語名</label><select id="fSubtitle"></select></div>
-        <div class="field"><label for="fPrice">価格の数字</label><select id="fPrice"></select></div>
-        <div class="field"><label for="fAllergy">アレルギー表示</label><select id="fAllergy"></select></div>
+      <h2><span class="num">3</span>書式（テキストごとに指定）</h2>
+      <p class="hint">フォント・文字サイズ・中央配置を、テキスト1つずつ設定できます。</p>
+      <div class="fmt-head">
+        <span>テキスト</span><span>フォント</span><span>文字サイズ</span><span>配置</span>
       </div>
-      <p class="font-note" id="kanteiryuNote" hidden>ＤＦ勘亭流はこのPCにインストールされていないため、代わりに「筆文字（太）」で表示しています。勘亭流で印刷・書き出しをする場合は、ダイナフォントがインストールされたPCで開いてください。</p>
+      <div id="formatRows"></div>
+      <p class="font-note" id="kanteiryuNote" hidden>ＤＦ勘亭流はこのPCにインストールされていないため、代わりに「筆文字（太）」で表示しています。勘亭流で印刷・書き出しをする場合は、ダイナフォントが入ったPCで開いてください。</p>
     </section>
 
     <section class="panel">
       <h2><span class="num">4</span>テキスト</h2>
       <div class="field-grid">
         <div class="field wide"><label for="iBadge">バッジ文言（Enterで2行目）</label>
-          <textarea id="iBadge" rows="2">期間限定</textarea>
+          <textarea id="iBadge" rows="2">定番</textarea>
         </div>
-        <div class="field"><label for="iRuby">ふりがな</label><input type="text" id="iRuby" value="とうにゅう"></div>
-        <div class="field"><label for="iTitle">商品名</label><input type="text" id="iTitle" value="豆乳クリーム"></div>
-        <div class="field wide"><label for="iSubtitle">英語名</label><input type="text" id="iSubtitle" value="Soybean Milk Cream"></div>
+        <div class="field"><label for="iRuby">ふりがな</label><input type="text" id="iRuby" value="くりまんじゅう"></div>
+        <div class="field"><label for="iTitle">商品名</label><input type="text" id="iTitle" value="栗まんじゅう"></div>
+        <div class="field wide"><label for="iSubtitle">英語名</label><input type="text" id="iSubtitle" value="Chestnut Manju"></div>
         <div class="field wide"><label for="iDesc">説明文（改行OK）</label>
-          <textarea id="iDesc" rows="3">大人気商品!!国産大豆の
-コクを生かした、なめらかで
-甘さ控えめのクリームです。</textarea>
+          <textarea id="iDesc" rows="3">しっとり生地に自家製の栗あんを
+包み込んで焼き上げた、
+創業以来の看板商品です。</textarea>
         </div>
-        <div class="field"><label for="iPrice">価格（税抜・円）</label><input type="number" id="iPrice" value="204" min="0" step="1"></div>
+        <div class="field"><label for="iPrice">価格（税抜・円）</label><input type="number" id="iPrice" value="162" min="0" step="1"></div>
         <div class="field"><label for="iTaxRate">消費税率</label>
           <select id="iTaxRate">
             <option value="8">8%（軽減税率）</option>
             <option value="10">10%</option>
           </select>
         </div>
-        <div class="field"><label>税込価格（自動計算）</label><div class="readout" id="taxReadout">220円</div></div>
+        <div class="field"><label>税込価格（自動計算）</label><div class="readout" id="taxReadout">174円</div></div>
       </div>
     </section>
 
@@ -513,15 +528,19 @@
       <h2><span class="num">5</span>アレルギー表示</h2>
       <div class="field" style="margin-bottom:12px;">
         <label for="iAllergyPrefix">見出し文言</label>
-        <input type="text" id="iAllergyPrefix" value="【アレルギー表示 28品目】">
+        <input type="text" id="iAllergyPrefix" value="【アレルギー表示 29品目】">
       </div>
       <div class="allergy-group">
         <h3>特定原材料（義務表示 8品目）</h3>
         <div class="chip-grid" id="allergyMandatory"></div>
       </div>
       <div class="allergy-group">
-        <h3>特定原材料に準ずるもの（推奨表示 20品目）</h3>
+        <h3>特定原材料に準ずるもの（推奨表示 21品目）＋独自に追加した品目</h3>
         <div class="chip-grid" id="allergyRecommended"></div>
+        <div class="allergy-add-row" id="allergyAddRow" hidden>
+          <input type="text" id="allergyAddInput" placeholder="品目名を入力（例：ピスタチオ）">
+          <button type="button" class="btn-sm" id="allergyAddCommit">追加</button>
+        </div>
       </div>
       <div class="allergy-line-preview" id="allergyPreviewText"></div>
     </section>
@@ -561,19 +580,31 @@
     {id:"bebas",       label:"Bebas Neue",    family:"'Bebas Neue', sans-serif"}
   ];
   var ALL_FONTS = JP_FONTS.concat(LATIN_FONTS);
-  var FONT_ROLES = [
-    {key:"title",    list:JP_FONTS},
-    {key:"badge",    list:JP_FONTS},
-    {key:"ruby",     list:JP_FONTS},
-    {key:"desc",     list:JP_FONTS},
-    {key:"subtitle", list:LATIN_FONTS},
-    {key:"price",    list:LATIN_FONTS},
-    {key:"allergy",  list:JP_FONTS}
+
+  // One row of the 書式 panel per text element: font + size + (optional) centering.
+  var TEXT_ELEMENTS = [
+    {key:"title",    label:"商品名",       list:JP_FONTS,    align:true},
+    {key:"badge",    label:"バッジ文言",   list:JP_FONTS,    align:false},
+    {key:"ruby",     label:"ふりがな",     list:JP_FONTS,    align:true},
+    {key:"desc",     label:"商品詳細",     list:JP_FONTS,    align:true},
+    {key:"subtitle", label:"英語名",       list:LATIN_FONTS, align:true},
+    {key:"price",    label:"価格の数字",   list:LATIN_FONTS, align:false},
+    {key:"allergy",  label:"アレルギー表示", list:JP_FONTS,  align:true}
   ];
 
+  var SIZE_OPTIONS = [
+    {v:0.7,  label:"特小"},
+    {v:0.85, label:"小"},
+    {v:1,    label:"標準"},
+    {v:1.15, label:"やや大"},
+    {v:1.3,  label:"大"},
+    {v:1.5,  label:"特大"},
+    {v:1.8,  label:"最大"}
+  ];
+
+  // 8 mandatory + 21 recommended = the 29 items the label text refers to.
   var ALLERGY_MANDATORY = ["卵","乳成分","小麦","そば","落花生","えび","かに","くるみ"];
-  var ALLERGY_RECOMMENDED = ["アーモンド","あわび","いか","いくら","オレンジ","カシューナッツ","キウイフルーツ","牛肉","ごま","さけ","さば","大豆","鶏肉","バナナ","豚肉","まつたけ","もも","やまいも","りんご","ゼラチン"];
-  var ALLERGY_ALL = ALLERGY_MANDATORY.concat(ALLERGY_RECOMMENDED);
+  var ALLERGY_RECOMMENDED = ["アーモンド","あわび","いか","いくら","オレンジ","カシューナッツ","キウイフルーツ","牛肉","ごま","さけ","さば","大豆","鶏肉","バナナ","豚肉","マカダミアナッツ","まつたけ","もも","やまいも","りんご","ゼラチン"];
 
   var PALETTES = [
     {id:"classic", name:"定番（黄×赤）", frame:"#f6de9e", bg:"#ffffff", badge:"#da2419", accent:"#da2419", text:"#1a1a1a"},
@@ -584,98 +615,95 @@
     {id:"sale",    name:"セール（黒×金）", frame:"#232323", bg:"#141414", badge:"#f2c230", accent:"#f2c230", text:"#f5f0e3"}
   ];
 
-  // Each template's `fonts` maps every FONT_ROLES key to a font id from that role's list.
+  var ALLERGY_PREFIX = "【アレルギー表示 29品目】";
+
   var TEMPLATES = [
     {
-      name:"期間限定", tag:"定番の季節POP",
-      badge:"期間限定", ruby:"とうにゅう", title:"豆乳クリーム", subtitle:"Soybean Milk Cream",
-      desc:"大人気商品!!国産大豆の\nコクを生かした、なめらかで\n甘さ控えめのクリームです。",
-      price:204, taxRate:8, allergies:["卵","小麦","乳成分","大豆"],
-      palette:"classic", shape:"circle",
+      name:"定番", tag:"通年の看板商品",
+      badge:"定番", ruby:"くりまんじゅう", title:"栗まんじゅう", subtitle:"Chestnut Manju",
+      desc:"しっとり生地に自家製の栗あんを\n包み込んで焼き上げた、\n創業以来の看板商品です。",
+      price:162, taxRate:8, allergies:["卵","乳成分","小麦"],
+      palette:"classic",
       fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"zenkaku", desc:"zenkaku", subtitle:"spacemono", price:"spacemono", allergy:"zenkaku"}
     },
     {
-      name:"数量限定", tag:"秋の栗スイーツ",
-      badge:"数量限定", ruby:"くりきんとん", title:"栗きんとん", subtitle:"Chestnut Kinton",
-      desc:"国産栗をふんだんに使用した、\n秋限定の贅沢な一品です。\n数量限定でのご提供となります。",
-      price:258, taxRate:8, allergies:["乳成分"],
-      palette:"autumn", shape:"burst",
+      name:"準定番", tag:"定番に次ぐ人気商品",
+      badge:"準定番", ruby:"くりどらやき", title:"栗どら焼き", subtitle:"Chestnut Dorayaki",
+      desc:"ふんわり焼き上げた生地に、\n粒あんと大きな栗を\nまるごと挟みました。",
+      price:194, taxRate:8, allergies:["卵","乳成分","小麦"],
+      palette:"autumn",
       fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"noto", desc:"noto", subtitle:"oswald", price:"oswald", allergy:"noto"}
     },
     {
-      name:"新商品", tag:"春の新作",
-      badge:"新商品\nNEW", ruby:"さくらもち", title:"桜もち", subtitle:"Sakura Mochi",
-      desc:"道明寺粉のもちもち食感と、\n桜葉の塩気が絶妙にマッチした\n春の新作です。",
+      name:"季節限定", tag:"旬の素材でつくる品",
+      badge:"季節限定", ruby:"さくらもち", title:"桜もち", subtitle:"Sakura Mochi",
+      desc:"道明寺粉のもちもち食感と、\n桜葉の塩気がきいた\n春だけの和菓子です。",
       price:180, taxRate:8, allergies:[],
-      palette:"sakura", shape:"ribbon",
-      fonts:{title:"hachimaru", badge:"hachimaru", ruby:"kosugi", desc:"kosugi", subtitle:"bebas", price:"bebas", allergy:"kosugi"}
+      palette:"sakura",
+      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"kosugi", desc:"kosugi", subtitle:"bebas", price:"bebas", allergy:"kosugi"}
     },
     {
-      name:"本日のおすすめ", tag:"夏の冷たいスイーツ",
-      badge:"本日の\nおすすめ", ruby:"かきごおり", title:"かき氷ソーダ", subtitle:"Soda Shaved Ice",
-      desc:"暑い日にぴったり!\nふわふわ氷にサイダーシロップを\nたっぷりとかけました。",
-      price:320, taxRate:10, allergies:[],
-      palette:"summer", shape:"burst",
-      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"zenkaku", desc:"zenkaku", subtitle:"archivo", price:"archivo", allergy:"zenkaku"}
-    },
-    {
-      name:"クリスマス限定", tag:"冬季限定ケーキ",
-      badge:"Xmas\n限定", ruby:"いちごの", title:"苺のショート", subtitle:"Strawberry Shortcake",
-      desc:"厳選した苺と北海道産生クリームを\n使用したクリスマス限定の\nショートケーキです。",
-      price:480, taxRate:8, allergies:["卵","小麦","乳成分"],
-      palette:"xmas", shape:"ribbon",
-      fonts:{title:"dela", badge:"dela", ruby:"noto", desc:"noto", subtitle:"staatliches", price:"staatliches", allergy:"noto"}
-    },
-    {
-      name:"セール品", tag:"お買い得セット",
-      badge:"SALE", ruby:"やきがし", title:"焼き菓子詰め合わせ", subtitle:"Baked Sweets Set",
-      desc:"販売終了間近!\n人気の焼き菓子を詰め合わせた、\nお得なセットです。お早めに。",
-      price:500, taxRate:10, allergies:["卵","小麦","乳成分","大豆"],
-      palette:"sale", shape:"circle",
-      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"mplus", desc:"mplus", subtitle:"spacemono", price:"spacemono", allergy:"mplus"}
+      name:"期間限定", tag:"期間を区切って販売",
+      badge:"期間限定", ruby:"とうにゅう", title:"豆乳クリーム", subtitle:"Soybean Milk Cream",
+      desc:"大人気商品!!国産大豆の\nコクを生かした、なめらかで\n甘さ控えめのクリームです。",
+      price:204, taxRate:8, allergies:["卵","小麦","乳成分","大豆"],
+      palette:"classic",
+      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"zenkaku", desc:"zenkaku", subtitle:"spacemono", price:"spacemono", allergy:"zenkaku"}
     }
   ];
 
-  var DEFAULT_LAYOUT = {frameThickness:1, innerPadding:2, cornerRadius:0};
+  var DEFAULT_INNER_PAD = 2;
 
   var state = null;
+  var fmtControls = {};   // key -> {font, size, align}
   var els = {};
-  ["label","badgeWrap","badgeShape","badgeText","rubyOut","titleOut","subtitleOut",
+  ["label","badgeWrap","badgeText","rubyOut","titleOut","subtitleOut",
    "descOut","priceOut","taxPriceOut","allergyOut","tplGrid","paletteGrid",
-   "cFrame","cBg","cBadge","cAccent","cText","shapeRow",
-   "fTitle","fBadge","fRuby","fDesc","fSubtitle","fPrice","fAllergy",
-   "lFrameThick","lFrameThickVal","lInnerPad","lInnerPadVal","lRadius","lRadiusVal",
+   "cFrame","cBg","cBadge","cAccent","cText","formatRows",
+   "lInnerPad","lInnerPadVal",
    "iBadge","iRuby","iTitle","iSubtitle","iDesc","iPrice","iTaxRate","taxReadout",
    "iAllergyPrefix","allergyMandatory","allergyRecommended","allergyPreviewText",
+   "allergyAddRow","allergyAddInput","allergyAddCommit",
    "exportBtn","printBtn","randomBtn","statusOut","kanteiryuNote"
   ].forEach(function(id){ els[id] = document.getElementById(id); });
 
-  function cloneTemplate(t, keepLayout){
+  function defaultSizes(){
+    var o = {};
+    TEXT_ELEMENTS.forEach(function(e){ o[e.key] = 1; });
+    return o;
+  }
+  function defaultAligns(){
+    var o = {};
+    TEXT_ELEMENTS.forEach(function(e){ if(e.align) o[e.key] = "left"; });
+    return o;
+  }
+
+  // Formatting choices and custom allergens are the user's own settings, so they
+  // survive a template switch; only the content and colors come from the template.
+  function cloneTemplate(t, carry){
     var fonts = {};
-    FONT_ROLES.forEach(function(r){ fonts[r.key] = t.fonts[r.key]; });
+    TEXT_ELEMENTS.forEach(function(e){ fonts[e.key] = t.fonts[e.key]; });
+    var p = paletteById(t.palette);
     return {
       badge:t.badge, ruby:t.ruby, title:t.title, subtitle:t.subtitle, desc:t.desc,
       price:t.price, taxRate:t.taxRate, allergies:t.allergies.slice(),
-      allergyPrefix:"【アレルギー表示 28品目】",
-      colors: (function(){ var p=paletteById(t.palette); return {frame:p.frame,bg:p.bg,badge:p.badge,accent:p.accent,text:p.text}; })(),
+      allergyPrefix: ALLERGY_PREFIX,
+      colors:{frame:p.frame, bg:p.bg, badge:p.badge, accent:p.accent, text:p.text},
       fonts: fonts,
-      shape:t.shape,
-      layout: keepLayout ? keepLayout : Object.assign({}, DEFAULT_LAYOUT)
+      sizes: carry ? carry.sizes : defaultSizes(),
+      aligns: carry ? carry.aligns : defaultAligns(),
+      innerPad: carry ? carry.innerPad : DEFAULT_INNER_PAD,
+      customAllergies: carry ? carry.customAllergies : []
     };
   }
   function paletteById(id){ for(var i=0;i<PALETTES.length;i++){ if(PALETTES[i].id===id) return PALETTES[i]; } return PALETTES[0]; }
 
-  function fillSelect(sel, list){
-    sel.innerHTML = "";
-    list.forEach(function(f){
-      var o = document.createElement("option");
-      o.value = f.id; o.textContent = f.label;
-      sel.appendChild(o);
-    });
-  }
   function fontFamily(id){
     for(var i=0;i<ALL_FONTS.length;i++){ if(ALL_FONTS[i].id===id) return ALL_FONTS[i].family; }
     return ALL_FONTS[0].family;
+  }
+  function allAllergens(){
+    return ALLERGY_MANDATORY.concat(ALLERGY_RECOMMENDED, state.customAllergies);
   }
 
   // 勘亭流 is only present when the viewer has DynaFont installed; compare rendered
@@ -709,12 +737,13 @@
       btn.className = "tpl-card";
       btn.innerHTML =
         '<span class="tpl-bar" style="background:linear-gradient(90deg,'+p.frame+' 50%,'+p.badge+' 50%);"></span>'+
-        '<b>'+t.name+'</b><span>'+t.tag+'</span>';
+        '<b></b><span></span>';
+      btn.querySelector("b").textContent = t.name;
+      btn.querySelector("span:last-child").textContent = t.tag;
       btn.addEventListener("click", function(){
         applyTemplate(idx);
         setActiveTemplate(idx);
       });
-      btn.dataset.idx = idx;
       els.tplGrid.appendChild(btn);
     });
   }
@@ -728,8 +757,11 @@
     els.paletteGrid.innerHTML = "";
     PALETTES.forEach(function(p){
       var b = document.createElement("button");
-      b.type = "button"; b.className = "chip"; b.setAttribute("aria-pressed","false");
-      b.innerHTML = '<span class="swatch" style="background:'+p.badge+';"></span>'+p.name;
+      b.type = "button"; b.className = "chip";
+      var sw = document.createElement("span");
+      sw.className = "swatch"; sw.style.background = p.badge;
+      b.appendChild(sw);
+      b.appendChild(document.createTextNode(p.name));
       b.addEventListener("click", function(){
         state.colors = {frame:p.frame, bg:p.bg, badge:p.badge, accent:p.accent, text:p.text};
         syncColorInputs();
@@ -739,23 +771,125 @@
     });
   }
 
-  function buildAllergyChips(){
-    function build(container, items){
-      container.innerHTML = "";
-      items.forEach(function(name){
-        var b = document.createElement("button");
-        b.type = "button"; b.className = "chip"; b.setAttribute("aria-pressed","false");
-        b.textContent = name;
-        b.addEventListener("click", function(){
-          var i = state.allergies.indexOf(name);
-          if(i>=0){ state.allergies.splice(i,1); } else { state.allergies.push(name); }
+  function buildFormatRows(){
+    els.formatRows.innerHTML = "";
+    TEXT_ELEMENTS.forEach(function(e){
+      var row = document.createElement("div");
+      row.className = "fmt-row";
+
+      var name = document.createElement("span");
+      name.className = "fmt-name";
+      name.textContent = e.label;
+
+      var fontSel = document.createElement("select");
+      fontSel.setAttribute("aria-label", e.label + "のフォント");
+      e.list.forEach(function(f){
+        var o = document.createElement("option");
+        o.value = f.id; o.textContent = f.label;
+        fontSel.appendChild(o);
+      });
+      fontSel.addEventListener("change", function(){ state.fonts[e.key] = this.value; render(); });
+
+      var sizeSel = document.createElement("select");
+      sizeSel.setAttribute("aria-label", e.label + "の文字サイズ");
+      SIZE_OPTIONS.forEach(function(s){
+        var o = document.createElement("option");
+        o.value = String(s.v); o.textContent = s.label;
+        sizeSel.appendChild(o);
+      });
+      sizeSel.addEventListener("change", function(){ state.sizes[e.key] = Number(this.value); render(); });
+
+      row.appendChild(name);
+      row.appendChild(fontSel);
+      row.appendChild(sizeSel);
+
+      var alignBtn = null;
+      if(e.align){
+        alignBtn = document.createElement("button");
+        alignBtn.type = "button";
+        alignBtn.className = "fmt-align";
+        alignBtn.textContent = "中央";
+        alignBtn.setAttribute("aria-pressed","false");
+        alignBtn.addEventListener("click", function(){
+          state.aligns[e.key] = state.aligns[e.key] === "center" ? "left" : "center";
           render();
         });
-        container.appendChild(b);
+        row.appendChild(alignBtn);
+      }else{
+        var dash = document.createElement("span");
+        dash.className = "fmt-none";
+        dash.textContent = "—";
+        row.appendChild(dash);
+      }
+
+      fmtControls[e.key] = {font:fontSel, size:sizeSel, align:alignBtn};
+      els.formatRows.appendChild(row);
+    });
+  }
+
+  function makeAllergyChip(name, removable){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "chip";
+    b.dataset.item = name;
+    b.appendChild(document.createTextNode(name));
+    b.addEventListener("click", function(){
+      var i = state.allergies.indexOf(name);
+      if(i>=0){ state.allergies.splice(i,1); } else { state.allergies.push(name); }
+      render();
+    });
+    if(removable){
+      var x = document.createElement("span");
+      x.className = "chip-x";
+      x.textContent = "×";
+      x.title = name + "を一覧から削除";
+      x.addEventListener("click", function(ev){
+        ev.stopPropagation();
+        var ci = state.customAllergies.indexOf(name);
+        if(ci>=0) state.customAllergies.splice(ci,1);
+        var si = state.allergies.indexOf(name);
+        if(si>=0) state.allergies.splice(si,1);
+        buildAllergyChips();
+        render();
       });
+      b.appendChild(x);
     }
-    build(els.allergyMandatory, ALLERGY_MANDATORY);
-    build(els.allergyRecommended, ALLERGY_RECOMMENDED);
+    return b;
+  }
+
+  function buildAllergyChips(){
+    els.allergyMandatory.innerHTML = "";
+    ALLERGY_MANDATORY.forEach(function(n){ els.allergyMandatory.appendChild(makeAllergyChip(n,false)); });
+
+    els.allergyRecommended.innerHTML = "";
+    ALLERGY_RECOMMENDED.forEach(function(n){ els.allergyRecommended.appendChild(makeAllergyChip(n,false)); });
+    (state ? state.customAllergies : []).forEach(function(n){
+      els.allergyRecommended.appendChild(makeAllergyChip(n,true));
+    });
+
+    var add = document.createElement("button");
+    add.type = "button";
+    add.className = "chip chip-add";
+    add.textContent = "＋ 追加";
+    add.addEventListener("click", function(){
+      els.allergyAddRow.hidden = false;
+      els.allergyAddInput.focus();
+    });
+    els.allergyRecommended.appendChild(add);
+  }
+
+  function addCustomAllergen(){
+    var name = els.allergyAddInput.value.trim();
+    if(!name) return;
+    if(allAllergens().indexOf(name) < 0){
+      state.customAllergies.push(name);
+    }
+    if(state.allergies.indexOf(name) < 0){
+      state.allergies.push(name);
+    }
+    els.allergyAddInput.value = "";
+    buildAllergyChips();
+    render();
+    els.allergyAddInput.focus();
   }
 
   function syncColorInputs(){
@@ -765,25 +899,21 @@
     els.cAccent.value = state.colors.accent;
     els.cText.value = state.colors.text;
   }
-  function syncShapeButtons(){
-    Array.prototype.forEach.call(els.shapeRow.children, function(b){
-      b.setAttribute("aria-pressed", String(b.dataset.shape===state.shape));
-    });
-  }
   function syncAllergyChips(){
     [els.allergyMandatory, els.allergyRecommended].forEach(function(container){
       Array.prototype.forEach.call(container.children, function(b){
-        b.setAttribute("aria-pressed", String(state.allergies.indexOf(b.textContent)>=0));
+        if(!b.dataset.item) return;
+        b.setAttribute("aria-pressed", String(state.allergies.indexOf(b.dataset.item)>=0));
       });
     });
   }
-  function syncLayoutInputs(){
-    els.lFrameThick.value = state.layout.frameThickness;
-    els.lFrameThickVal.textContent = state.layout.frameThickness.toFixed(1);
-    els.lInnerPad.value = state.layout.innerPadding;
-    els.lInnerPadVal.textContent = state.layout.innerPadding.toFixed(1);
-    els.lRadius.value = state.layout.cornerRadius;
-    els.lRadiusVal.textContent = state.layout.cornerRadius.toFixed(1);
+  function syncFormatControls(){
+    TEXT_ELEMENTS.forEach(function(e){
+      var c = fmtControls[e.key];
+      c.font.value = state.fonts[e.key];
+      c.size.value = String(state.sizes[e.key]);
+      if(c.align) c.align.setAttribute("aria-pressed", String(state.aligns[e.key] === "center"));
+    });
   }
   function syncInputsFromState(){
     els.iBadge.value = state.badge;
@@ -794,17 +924,16 @@
     els.iPrice.value = state.price;
     els.iTaxRate.value = String(state.taxRate);
     els.iAllergyPrefix.value = state.allergyPrefix;
-    FONT_ROLES.forEach(function(r){ els["f"+capitalize(r.key)].value = state.fonts[r.key]; });
+    els.lInnerPad.value = state.innerPad;
+    els.lInnerPadVal.textContent = state.innerPad.toFixed(1);
     syncColorInputs();
-    syncShapeButtons();
+    syncFormatControls();
     syncAllergyChips();
-    syncLayoutInputs();
   }
-  function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
 
   function applyTemplate(idx){
-    var keepLayout = state ? state.layout : null;
-    state = cloneTemplate(TEMPLATES[idx], keepLayout);
+    state = cloneTemplate(TEMPLATES[idx], state);
+    buildAllergyChips();
     syncInputsFromState();
     render();
   }
@@ -818,19 +947,15 @@
     label.style.setProperty("--text-color", state.colors.text);
     label.style.setProperty("--badge-text-color", getContrastText(state.colors.badge));
     label.style.setProperty("--surface-line", getContrastText(state.colors.bg)==="#1a1a1a" ? "rgba(0,0,0,.14)" : "rgba(255,255,255,.2)");
+    label.style.setProperty("--inner-pad", state.innerPad+"cqw");
 
-    FONT_ROLES.forEach(function(r){
-      label.style.setProperty("--font-"+r.key, fontFamily(state.fonts[r.key]));
+    TEXT_ELEMENTS.forEach(function(e){
+      label.style.setProperty("--font-"+e.key, fontFamily(state.fonts[e.key]));
+      label.style.setProperty("--scale-"+e.key, state.sizes[e.key]);
+      if(e.align) label.style.setProperty("--align-"+e.key, state.aligns[e.key]);
     });
 
-    label.style.setProperty("--frame-thick", state.layout.frameThickness+"cqw");
-    label.style.setProperty("--inner-pad", state.layout.innerPadding+"cqw");
-    label.style.setProperty("--radius-outer", state.layout.cornerRadius+"cqw");
-    label.style.setProperty("--radius-inner", (state.layout.cornerRadius*0.6)+"cqw");
-
-    els.badgeWrap.setAttribute("data-shape", state.shape);
     els.badgeText.textContent = state.badge;
-
     els.rubyOut.textContent = state.ruby;
     els.rubyOut.hidden = !state.ruby;
     els.titleOut.textContent = state.title;
@@ -844,16 +969,16 @@
     els.taxPriceOut.textContent = taxIncluded;
     els.taxReadout.textContent = taxIncluded + "円";
 
-    var orderedAllergies = ALLERGY_ALL.filter(function(a){ return state.allergies.indexOf(a) >= 0; });
-    var allergyText = state.allergyPrefix + (orderedAllergies.length ? " " + orderedAllergies.join("・") : " 該当原材料なし");
+    var ordered = allAllergens().filter(function(a){ return state.allergies.indexOf(a) >= 0; });
+    var allergyText = state.allergyPrefix + (ordered.length ? " " + ordered.join("・") : " 該当原材料なし");
     els.allergyOut.textContent = allergyText;
     els.allergyPreviewText.textContent = allergyText;
 
-    var usesKanteiryu = FONT_ROLES.some(function(r){ return state.fonts[r.key] === "kanteiryu"; });
+    var usesKanteiryu = TEXT_ELEMENTS.some(function(e){ return state.fonts[e.key] === "kanteiryu"; });
     els.kanteiryuNote.hidden = !usesKanteiryu || hasKanteiryu();
 
-    syncShapeButtons();
     syncAllergyChips();
+    syncFormatControls();
   }
 
   function bindInputs(){
@@ -871,16 +996,16 @@
       els[id].addEventListener("input", function(){ state.colors[key] = this.value; render(); });
     });
 
-    FONT_ROLES.forEach(function(r){
-      els["f"+capitalize(r.key)].addEventListener("change", function(){ state.fonts[r.key] = this.value; render(); });
+    els.lInnerPad.addEventListener("input", function(){
+      state.innerPad = Number(this.value);
+      els.lInnerPadVal.textContent = state.innerPad.toFixed(1);
+      render();
     });
 
-    els.lFrameThick.addEventListener("input", function(){ state.layout.frameThickness = Number(this.value); render(); syncLayoutInputs(); });
-    els.lInnerPad.addEventListener("input", function(){ state.layout.innerPadding = Number(this.value); render(); syncLayoutInputs(); });
-    els.lRadius.addEventListener("input", function(){ state.layout.cornerRadius = Number(this.value); render(); syncLayoutInputs(); });
-
-    Array.prototype.forEach.call(els.shapeRow.children, function(b){
-      b.addEventListener("click", function(){ state.shape = b.dataset.shape; render(); });
+    els.allergyAddCommit.addEventListener("click", addCustomAllergen);
+    els.allergyAddInput.addEventListener("keydown", function(ev){
+      if(ev.key === "Enter"){ ev.preventDefault(); addCustomAllergen(); }
+      if(ev.key === "Escape"){ els.allergyAddRow.hidden = true; }
     });
 
     els.printBtn.addEventListener("click", function(){ window.print(); });
@@ -894,10 +1019,8 @@
     setActiveTemplate(idx);
     var palette = PALETTES[Math.floor(Math.random()*PALETTES.length)];
     state.colors = {frame:palette.frame, bg:palette.bg, badge:palette.badge, accent:palette.accent, text:palette.text};
-    var shapes = ["circle","burst","ribbon"];
-    state.shape = shapes[Math.floor(Math.random()*shapes.length)];
-    FONT_ROLES.forEach(function(r){
-      state.fonts[r.key] = r.list[Math.floor(Math.random()*r.list.length)].id;
+    TEXT_ELEMENTS.forEach(function(e){
+      state.fonts[e.key] = e.list[Math.floor(Math.random()*e.list.length)].id;
     });
     syncInputsFromState();
     render();
@@ -957,10 +1080,9 @@
   }
 
   // init
-  FONT_ROLES.forEach(function(r){ fillSelect(els["f"+capitalize(r.key)], r.list); });
   buildTemplateCards();
   buildPaletteChips();
-  buildAllergyChips();
+  buildFormatRows();
   bindInputs();
   applyTemplate(0);
   setActiveTemplate(0);
