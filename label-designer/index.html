@@ -2,7 +2,7 @@
 <meta name="description" content="色・フォント・テキストを自由に組み替えて、店頭POP値札をつくるデザインツール。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=Dela+Gothic+One&family=Hachi+Maru+Pop&family=Kaisei+Decol:wght@400;700&family=Kosugi+Maru&family=M+PLUS+1p:wght@400;700;900&family=Noto+Sans+JP:wght@400;500;700;900&family=Oswald:wght@400;600;700&family=Reggae+One&family=Space+Mono:wght@400;700&family=Staatliches&family=Yusei+Magic&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=Dela+Gothic+One&family=Hachi+Maru+Pop&family=Kaisei+Decol:wght@400;700&family=Kosugi+Maru&family=M+PLUS+1p:wght@400;700;900&family=Noto+Sans+JP:wght@400;500;700;900&family=Oswald:wght@400;600;700&family=Reggae+One&family=Space+Mono:wght@400;700&family=Staatliches&family=Yuji+Boku&family=Yuji+Syuku&family=Yusei+Magic&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
 
 <style>
   :root{
@@ -337,6 +337,12 @@
   .shape-btn[data-shape="circle"] .shape-preview{ border-radius:50%; }
   .shape-btn[data-shape="ribbon"] .shape-preview{ border-radius:6px; clip-path:polygon(10% 0%,90% 0%,100% 50%,90% 100%,10% 100%,0% 50%); }
 
+  .font-note{
+    margin:12px 0 0; padding:9px 12px; border-radius:var(--radius-sm);
+    background:var(--accent-soft); color:var(--accent-strong);
+    font-size:12px; line-height:1.5;
+  }
+
   .allergy-group{ margin-bottom:12px; }
   .allergy-group h3{ font-size:11.5px; color:var(--text-muted); font-weight:700; margin-bottom:7px; letter-spacing:.03em; }
   .allergy-line-preview{
@@ -475,6 +481,7 @@
         <div class="field"><label for="fPrice">価格の数字</label><select id="fPrice"></select></div>
         <div class="field"><label for="fAllergy">アレルギー表示</label><select id="fAllergy"></select></div>
       </div>
+      <p class="font-note" id="kanteiryuNote" hidden>ＤＦ勘亭流はこのPCにインストールされていないため、代わりに「筆文字（太）」で表示しています。勘亭流で印刷・書き出しをする場合は、ダイナフォントがインストールされたPCで開いてください。</p>
     </section>
 
     <section class="panel">
@@ -528,7 +535,13 @@
   "use strict";
 
   // Fonts capable of Japanese glyphs - used for badge / ruby / title / desc / allergy.
+  // 勘亭流 is a commercial DynaComware font, so it is referenced from the viewer's
+  // own installation rather than served with the page; Yuji Boku is the web fallback.
+  var KANTEIRYU_STACK = "'DFPKanTeiRyu-XB','ＤＦＰ勘亭流','DFGKanTeiRyu-XB','ＤＦＧ勘亭流','DFKanTeiRyu-XB','ＤＦ勘亭流','Yuji Boku',serif";
   var JP_FONTS = [
+    {id:"kanteiryu", label:"ＤＦ勘亭流",       family:KANTEIRYU_STACK},
+    {id:"yujiboku",  label:"筆文字（太）",     family:"'Yuji Boku', serif"},
+    {id:"yujisyuku", label:"筆文字（細）",     family:"'Yuji Syuku', serif"},
     {id:"zenkaku",   label:"極太ゴシック",     family:"'Zen Kaku Gothic New', sans-serif"},
     {id:"dela",      label:"ポスターゴシック", family:"'Dela Gothic One', sans-serif"},
     {id:"reggae",    label:"丸太ゴシック",     family:"'Reggae One', sans-serif"},
@@ -579,7 +592,7 @@
       desc:"大人気商品!!国産大豆の\nコクを生かした、なめらかで\n甘さ控えめのクリームです。",
       price:204, taxRate:8, allergies:["卵","小麦","乳成分","大豆"],
       palette:"classic", shape:"circle",
-      fonts:{title:"zenkaku", badge:"zenkaku", ruby:"zenkaku", desc:"zenkaku", subtitle:"spacemono", price:"spacemono", allergy:"zenkaku"}
+      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"zenkaku", desc:"zenkaku", subtitle:"spacemono", price:"spacemono", allergy:"zenkaku"}
     },
     {
       name:"数量限定", tag:"秋の栗スイーツ",
@@ -587,7 +600,7 @@
       desc:"国産栗をふんだんに使用した、\n秋限定の贅沢な一品です。\n数量限定でのご提供となります。",
       price:258, taxRate:8, allergies:["乳成分"],
       palette:"autumn", shape:"burst",
-      fonts:{title:"kaisei", badge:"kaisei", ruby:"noto", desc:"noto", subtitle:"oswald", price:"oswald", allergy:"noto"}
+      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"noto", desc:"noto", subtitle:"oswald", price:"oswald", allergy:"noto"}
     },
     {
       name:"新商品", tag:"春の新作",
@@ -603,7 +616,7 @@
       desc:"暑い日にぴったり!\nふわふわ氷にサイダーシロップを\nたっぷりとかけました。",
       price:320, taxRate:10, allergies:[],
       palette:"summer", shape:"burst",
-      fonts:{title:"reggae", badge:"reggae", ruby:"zenkaku", desc:"zenkaku", subtitle:"archivo", price:"archivo", allergy:"zenkaku"}
+      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"zenkaku", desc:"zenkaku", subtitle:"archivo", price:"archivo", allergy:"zenkaku"}
     },
     {
       name:"クリスマス限定", tag:"冬季限定ケーキ",
@@ -619,7 +632,7 @@
       desc:"販売終了間近!\n人気の焼き菓子を詰め合わせた、\nお得なセットです。お早めに。",
       price:500, taxRate:10, allergies:["卵","小麦","乳成分","大豆"],
       palette:"sale", shape:"circle",
-      fonts:{title:"yusei", badge:"yusei", ruby:"mplus", desc:"mplus", subtitle:"spacemono", price:"spacemono", allergy:"mplus"}
+      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"mplus", desc:"mplus", subtitle:"spacemono", price:"spacemono", allergy:"mplus"}
     }
   ];
 
@@ -634,7 +647,7 @@
    "lFrameThick","lFrameThickVal","lInnerPad","lInnerPadVal","lRadius","lRadiusVal",
    "iBadge","iRuby","iTitle","iSubtitle","iDesc","iPrice","iTaxRate","taxReadout",
    "iAllergyPrefix","allergyMandatory","allergyRecommended","allergyPreviewText",
-   "exportBtn","printBtn","randomBtn","statusOut"
+   "exportBtn","printBtn","randomBtn","statusOut","kanteiryuNote"
   ].forEach(function(id){ els[id] = document.getElementById(id); });
 
   function cloneTemplate(t, keepLayout){
@@ -663,6 +676,20 @@
   function fontFamily(id){
     for(var i=0;i<ALL_FONTS.length;i++){ if(ALL_FONTS[i].id===id) return ALL_FONTS[i].family; }
     return ALL_FONTS[0].family;
+  }
+
+  // 勘亭流 is only present when the viewer has DynaFont installed; compare rendered
+  // widths against a generic fallback to find out whether it actually resolved.
+  var kanteiryuAvailable = null;
+  function hasKanteiryu(){
+    if(kanteiryuAvailable !== null) return kanteiryuAvailable;
+    var ctx = document.createElement("canvas").getContext("2d");
+    var sample = "勘亭流あア永";
+    function widthOf(stack){ ctx.font = "48px " + stack; return ctx.measureText(sample).width; }
+    var base = widthOf("monospace");
+    kanteiryuAvailable = ["DFPKanTeiRyu-XB","ＤＦＰ勘亭流","DFGKanTeiRyu-XB","ＤＦＧ勘亭流","DFKanTeiRyu-XB","ＤＦ勘亭流"]
+      .some(function(n){ return widthOf('"'+n+'", monospace') !== base; });
+    return kanteiryuAvailable;
   }
 
   function getContrastText(hex){
@@ -821,6 +848,9 @@
     var allergyText = state.allergyPrefix + (orderedAllergies.length ? " " + orderedAllergies.join("・") : " 該当原材料なし");
     els.allergyOut.textContent = allergyText;
     els.allergyPreviewText.textContent = allergyText;
+
+    var usesKanteiryu = FONT_ROLES.some(function(r){ return state.fonts[r.key] === "kanteiryu"; });
+    els.kanteiryuNote.hidden = !usesKanteiryu || hasKanteiryu();
 
     syncShapeButtons();
     syncAllergyChips();
