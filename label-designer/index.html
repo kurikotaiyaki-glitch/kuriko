@@ -223,7 +223,10 @@
   }
   /* Latin caps only reach ~0.67em against a kanji's ~0.96em, so the Latin line
      is scaled up to read at the same size as 税込 beside it. */
-  .tax-label .en{ display:block; font-size:1.4em; }
+  /* The word space comes from the layout, not the font: a monospace space is a
+     full 0.6em advance and its glyphs already carry wide side bearings, so the
+     gap is set per font (see --tax-word-gap) to read as one half-width space. */
+  .tax-label .en{ display:flex; justify-content:center; gap:var(--tax-word-gap,.26em); font-size:1.4em; }
   .tax-label .jp{ font-family:var(--font-desc); display:block; }
   .tax-num{
     font-family: var(--font-price);
@@ -450,7 +453,7 @@
             <div class="price-block">
               <div class="price-main"><span id="priceOut">162</span><span class="yen">円</span></div>
               <div class="tax-box">
-                <span class="tax-label"><span class="en">Tax in</span><span class="jp">税込</span></span>
+                <span class="tax-label"><span class="en"><span>Tax</span><span>in</span></span><span class="jp">税込</span></span>
                 <span class="tax-num"><span id="taxPriceOut">174</span><span class="yen">円</span></span>
               </div>
             </div>
@@ -581,7 +584,7 @@
   ];
   // Latin/numeral-only fonts - used for the English subtitle and price digits.
   var LATIN_FONTS = [
-    {id:"spacemono",   label:"Space Mono",    family:"'Space Mono', monospace"},
+    {id:"spacemono",   label:"Space Mono",    family:"'Space Mono', monospace", mono:true},
     {id:"archivo",     label:"Archivo Black", family:"'Archivo Black', sans-serif"},
     {id:"staatliches", label:"Staatliches",   family:"'Staatliches', sans-serif"},
     {id:"oswald",      label:"Oswald",        family:"'Oswald', sans-serif"},
@@ -704,6 +707,10 @@
   function fontFamily(id){
     for(var i=0;i<ALL_FONTS.length;i++){ if(ALL_FONTS[i].id===id) return ALL_FONTS[i].family; }
     return ALL_FONTS[0].family;
+  }
+  function isMonoFont(id){
+    for(var i=0;i<ALL_FONTS.length;i++){ if(ALL_FONTS[i].id===id) return !!ALL_FONTS[i].mono; }
+    return false;
   }
   function allAllergens(){
     return ALLERGY_MANDATORY.concat(ALLERGY_RECOMMENDED, state.customAllergies);
@@ -967,6 +974,7 @@
     label.style.setProperty("--badge-text-color", getContrastText(state.colors.badge));
     label.style.setProperty("--surface-line", getContrastText(state.colors.bg)==="#1a1a1a" ? "rgba(0,0,0,.14)" : "rgba(255,255,255,.2)");
     label.style.setProperty("--inner-pad", state.innerPad+"cqw");
+    label.style.setProperty("--tax-word-gap", isMonoFont(state.fonts.price) ? ".1em" : ".26em");
 
     TEXT_ELEMENTS.forEach(function(e){
       label.style.setProperty("--font-"+e.key, fontFamily(state.fonts[e.key]));
