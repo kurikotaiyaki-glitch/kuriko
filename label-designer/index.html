@@ -154,6 +154,7 @@
     font-family: var(--font-ruby);
     font-size: calc(1.6cqw * var(--scale-ruby,1));
     text-align: var(--align-ruby, left);
+    transform: translate(var(--ruby-x,0px), var(--ruby-y,0px));
     color: color-mix(in srgb, var(--text-color,#1a1a1a) 62%, transparent);
     letter-spacing:.08em;
   }
@@ -172,6 +173,7 @@
     font-family: var(--font-subtitle);
     font-size: calc(2.8cqw * var(--scale-subtitle,1));
     text-align: var(--align-subtitle, left);
+    transform: translate(var(--subtitle-x,0px), var(--subtitle-y,0px));
     letter-spacing:.04em;
     color: color-mix(in srgb, var(--text-color,#1a1a1a) 78%, transparent);
     overflow-wrap:anywhere;
@@ -195,11 +197,15 @@
     font-family: var(--font-desc);
     font-size: calc(2.3cqw * var(--scale-desc,1));
     text-align: var(--align-desc, left);
+    transform: translate(var(--desc-x,0px), var(--desc-y,0px));
     line-height:1.5;
     color: color-mix(in srgb, var(--text-color,#1a1a1a) 88%, transparent);
     white-space:pre-line;
   }
-  .price-block{ flex:none; display:flex; align-items:center; gap:1.3cqw; }
+  .price-block{
+    flex:none; display:flex; align-items:center; gap:1.3cqw;
+    transform: translate(var(--price-x,0px), var(--price-y,0px));
+  }
   .price-main{
     font-family: var(--font-price);
     font-weight:700;
@@ -247,6 +253,7 @@
     font-family: var(--font-allergy);
     font-size: calc(1.85cqw * var(--scale-allergy,1));
     text-align: var(--align-allergy, left);
+    transform: translate(var(--allergy-x,0px), var(--allergy-y,0px));
     line-height:1.4;
     color: color-mix(in srgb, var(--text-color,#1a1a1a) 82%, transparent);
   }
@@ -692,19 +699,21 @@
   // Fine positioning, folded into the 書式 row it belongs to. `factor` converts
   // between the number shown in the box and the value kept in state (the badge
   // size is a multiplier shown as a percentage).
-  var POS_FIELDS = {
-    title: [
-      {key:"titleX", label:"左右位置", min:-40, max:40, step:0.5, factor:1},
-      {key:"titleY", label:"上下位置", min:-20, max:20, step:0.5, factor:1}
-    ],
-    badge: [
-      {key:"badgeSize", label:"丸の大きさ（%）", min:20, max:300, step:5, factor:100},
-      {key:"badgeX",    label:"左右位置",        min:-40, max:40, step:0.5, factor:1},
-      {key:"badgeY",    label:"上下位置",        min:-20, max:20, step:0.5, factor:1}
-    ]
-  };
+  function posFieldsFor(key){
+    var fields = [];
+    if(key === "badge"){
+      fields.push({key:"badgeSize", label:"丸の大きさ（%）", min:20, max:300, step:5, factor:100});
+    }
+    fields.push({key:key+"X", label:"左右位置", min:-40, max:40, step:0.5, factor:1});
+    fields.push({key:key+"Y", label:"上下位置", min:-20, max:20, step:0.5, factor:1});
+    return fields;
+  }
   var posControls = [];   // {field, input} pairs, filled while building the rows
-  function defaultPos(){ return {titleX:0, titleY:0, badgeSize:1, badgeX:0, badgeY:0}; }
+  function defaultPos(){
+    var o = {badgeSize:1};
+    TEXT_ELEMENTS.forEach(function(e){ o[e.key+"X"] = 0; o[e.key+"Y"] = 0; });
+    return o;
+  }
 
   var state = null;
   var fmtControls = {};   // key -> {font, size, align}
@@ -896,8 +905,8 @@
       item.className = "fmt-item";
       item.appendChild(row);
 
-      var fields = POS_FIELDS[e.key];
-      if(fields){
+      var fields = posFieldsFor(e.key);
+      {
         var detail = document.createElement("div");
         detail.className = "fmt-detail";
         detail.hidden = true;
@@ -943,8 +952,6 @@
         });
         row.appendChild(more);
         item.appendChild(detail);
-      }else{
-        row.appendChild(document.createElement("span"));
       }
 
       fmtControls[e.key] = {font:fontSel, size:sizeInput, align:alignBtn};
@@ -1084,15 +1091,13 @@
     label.style.setProperty("--surface-line", getContrastText(state.colors.bg)==="#1a1a1a" ? "rgba(0,0,0,.14)" : "rgba(255,255,255,.2)");
     label.style.setProperty("--inner-pad", state.innerPad+"cqw");
     label.style.setProperty("--tax-word-gap", isMonoFont(state.fonts.price) ? ".1em" : ".26em");
-    label.style.setProperty("--title-x", state.pos.titleX+"cqw");
-    label.style.setProperty("--title-y", state.pos.titleY+"cqw");
     label.style.setProperty("--badge-scale", state.pos.badgeSize);
-    label.style.setProperty("--badge-x", state.pos.badgeX+"cqw");
-    label.style.setProperty("--badge-y", state.pos.badgeY+"cqw");
 
     TEXT_ELEMENTS.forEach(function(e){
       label.style.setProperty("--font-"+e.key, fontFamily(state.fonts[e.key]));
       label.style.setProperty("--scale-"+e.key, state.sizes[e.key]);
+      label.style.setProperty("--"+e.key+"-x", state.pos[e.key+"X"]+"cqw");
+      label.style.setProperty("--"+e.key+"-y", state.pos[e.key+"Y"]+"cqw");
       if(e.align) label.style.setProperty("--align-"+e.key, state.aligns[e.key]);
     });
 
