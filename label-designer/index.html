@@ -542,11 +542,11 @@
         <input type="text" id="iAllergyPrefix" value="【アレルギー表示 29品目】">
       </div>
       <div class="allergy-group">
-        <h3>特定原材料（義務表示 8品目）</h3>
+        <h3>よく使う品目（特定原材料 義務表示 8品目 ＋ 大豆）</h3>
         <div class="chip-grid" id="allergyMandatory"></div>
       </div>
       <div class="allergy-group">
-        <h3>特定原材料に準ずるもの（推奨表示 21品目）＋独自に追加した品目</h3>
+        <h3>特定原材料に準ずるもの（推奨表示・大豆を除く20品目）＋独自に追加した品目</h3>
         <div class="chip-grid" id="allergyRecommended"></div>
         <div class="allergy-add-row" id="allergyAddRow" hidden>
           <input type="text" id="allergyAddInput" placeholder="品目名を入力（例：ピスタチオ）">
@@ -607,8 +607,10 @@
   var SIZE_MIN = 10, SIZE_MAX = 400;
 
   // 8 mandatory + 21 recommended = the 29 items the label text refers to.
-  var ALLERGY_MANDATORY = ["卵","乳成分","小麦","そば","落花生","えび","かに","くるみ"];
-  var ALLERGY_RECOMMENDED = ["アーモンド","あわび","いか","いくら","オレンジ","カシューナッツ","キウイフルーツ","牛肉","ごま","さけ","さば","大豆","鶏肉","バナナ","豚肉","マカダミアナッツ","まつたけ","もも","やまいも","りんご","ゼラチン"];
+  // 大豆 is legally a recommended item, but the shop uses it as often as the
+  // mandatory three, so it sits with them in the top row for quick ticking.
+  var ALLERGY_MANDATORY = ["卵","乳成分","小麦","大豆","そば","落花生","えび","かに","くるみ"];
+  var ALLERGY_RECOMMENDED = ["アーモンド","あわび","いか","いくら","オレンジ","カシューナッツ","キウイフルーツ","牛肉","ごま","さけ","さば","鶏肉","バナナ","豚肉","マカダミアナッツ","まつたけ","もも","やまいも","りんご","ゼラチン"];
 
   var PALETTES = [
     {id:"classic", name:"定番（黄×赤）", frame:"#f6de9e", bg:"#ffffff", badge:"#da2419", accent:"#da2419", text:"#1a1a1a"},
