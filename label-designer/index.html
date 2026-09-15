@@ -487,9 +487,10 @@
       </div>
 
       <h3 class="sub">白枠の調整</h3>
+      <p class="hint" style="margin:0 0 10px;">外枠（色つき部分）の太さは 0.8 固定・角丸なしです。白背景の余白だけ調整できます。</p>
       <div class="slider-field">
-        <label for="lInnerPad">白背景の余白<output id="lInnerPadVal">2.0</output></label>
-        <input type="range" id="lInnerPad" min="1" max="7" step="0.2" value="2">
+        <label for="lInnerPad">白背景の余白<output id="lInnerPadVal">0.8</output></label>
+        <input type="range" id="lInnerPad" min="0" max="7" step="0.1" value="0.8">
       </div>
     </section>
 
@@ -649,7 +650,7 @@
     }
   ];
 
-  var DEFAULT_INNER_PAD = 2;
+  var DEFAULT_INNER_PAD = 0.8;
 
   var state = null;
   var fmtControls = {};   // key -> {font, size, align}
