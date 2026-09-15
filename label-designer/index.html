@@ -180,12 +180,18 @@
   }
 
   .divider{ flex:none; height:1.4cqw; margin:1.3cqw 0 1cqw; }
+  /* Real dashes rather than a repeating radial-gradient: html2canvas paints a
+     gradient once instead of tiling it, which dropped the line from exports. */
   .divider.dotted{
-    background-image: radial-gradient(circle, var(--frame-color,#f6de9e) 1cqw, transparent 1.1cqw);
-    background-size: 3cqw 1.4cqw;
-    background-position: center;
-    background-repeat: repeat-x;
     height:1.1cqw;
+    display:flex; align-items:center; justify-content:space-between;
+    overflow:hidden;
+  }
+  .divider.dotted i{
+    flex:0 0 1.7cqw;
+    height:1.1cqw;
+    border-radius:.55cqw;
+    background: var(--frame-color,#f6de9e);
   }
   .divider.solid{
     height:0; border-top:.26cqw solid var(--surface-line, #e7e0cf); margin:1cqw 0 1.1cqw;
@@ -516,7 +522,7 @@
               <p class="subtitle" id="subtitleOut">Chestnut Manju</p>
             </div>
           </div>
-          <div class="divider dotted"></div>
+          <div class="divider dotted" id="dottedDivider" aria-hidden="true"></div>
           <div class="label-mid">
             <p class="desc" id="descOut">しっとり生地に自家製の栗あんを
 包み込んで焼き上げた、
@@ -774,7 +780,7 @@
    "iAllergyPrefix","allergyMandatory","allergyRecommended","allergyPreviewText",
    "allergyAddRow","allergyAddInput","allergyAddCommit",
    "exportBtn","printBtn","randomBtn","saveBtn","statusOut","kanteiryuNote",
-   "savedSection","savedList","savedEmpty","savedCount","savedClear"
+   "savedSection","savedList","savedEmpty","savedCount","savedClear","dottedDivider"
   ].forEach(function(id){ els[id] = document.getElementById(id); });
 
   function defaultSizes(){
@@ -1492,6 +1498,7 @@
   }
 
   // init
+  for(var dot=0; dot<30; dot++){ els.dottedDivider.appendChild(document.createElement("i")); }
   buildTemplateCards();
   buildPaletteChips();
   buildFormatRows();
