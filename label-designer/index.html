@@ -352,12 +352,16 @@
   .fmt-head span{ font-size:11px; font-weight:700; color:var(--text-muted); letter-spacing:.03em; }
   .fmt-row{ padding:7px 0; border-top:1px solid var(--border); }
   .fmt-name{ font-size:12.5px; font-weight:600; }
-  .fmt-row select{
-    width:100%; border:1px solid var(--border); background:var(--surface);
+  .fmt-row select,
+  .fmt-row input[type="number"]{
+    width:100%; min-width:0; border:1px solid var(--border); background:var(--surface);
     color:var(--text); border-radius:var(--radius-sm); padding:7px 8px;
     font-family:inherit; font-size:12.5px;
   }
-  .fmt-row select:focus-visible{ outline:2px solid var(--focus); outline-offset:1px; }
+  .fmt-row select:focus-visible,
+  .fmt-row input:focus-visible{ outline:2px solid var(--focus); outline-offset:1px; }
+  .fmt-size-cell{ display:flex; align-items:center; gap:4px; }
+  .fmt-size-cell span{ font-size:11px; color:var(--text-muted); flex:none; }
   .fmt-align{
     appearance:none; cursor:pointer; width:100%;
     border:1px solid var(--border); background:var(--surface-2); color:var(--text);
@@ -491,9 +495,9 @@
 
     <section class="panel">
       <h2><span class="num">3</span>書式（テキストごとに指定）</h2>
-      <p class="hint">フォント・文字サイズ・中央配置を、テキスト1つずつ設定できます。</p>
+      <p class="hint">フォント・文字サイズ・中央配置を、テキスト1つずつ設定できます。文字サイズは100%が標準です。</p>
       <div class="fmt-head">
-        <span>テキスト</span><span>フォント</span><span>文字サイズ</span><span>配置</span>
+        <span>テキスト</span><span>フォント</span><span>文字サイズ（%）</span><span>配置</span>
       </div>
       <div id="formatRows"></div>
       <p class="font-note" id="kanteiryuNote" hidden>ＤＦ勘亭流はこのPCにインストールされていないため、代わりに「筆文字（太）」で表示しています。勘亭流で印刷・書き出しをする場合は、ダイナフォントが入ったPCで開いてください。</p>
@@ -592,15 +596,8 @@
     {key:"allergy",  label:"アレルギー表示", list:JP_FONTS,  align:true}
   ];
 
-  var SIZE_OPTIONS = [
-    {v:0.7,  label:"特小"},
-    {v:0.85, label:"小"},
-    {v:1,    label:"標準"},
-    {v:1.15, label:"やや大"},
-    {v:1.3,  label:"大"},
-    {v:1.5,  label:"特大"},
-    {v:1.8,  label:"最大"}
-  ];
+  // Text size is entered as a percentage of each element's standard size.
+  var SIZE_MIN = 10, SIZE_MAX = 400;
 
   // 8 mandatory + 21 recommended = the 29 items the label text refers to.
   var ALLERGY_MANDATORY = ["卵","乳成分","小麦","そば","落花生","えび","かに","くるみ"];
@@ -790,18 +787,31 @@
       });
       fontSel.addEventListener("change", function(){ state.fonts[e.key] = this.value; render(); });
 
-      var sizeSel = document.createElement("select");
-      sizeSel.setAttribute("aria-label", e.label + "の文字サイズ");
-      SIZE_OPTIONS.forEach(function(s){
-        var o = document.createElement("option");
-        o.value = String(s.v); o.textContent = s.label;
-        sizeSel.appendChild(o);
+      var sizeCell = document.createElement("div");
+      sizeCell.className = "fmt-size-cell";
+      var sizeInput = document.createElement("input");
+      sizeInput.type = "number";
+      sizeInput.min = String(SIZE_MIN);
+      sizeInput.max = String(SIZE_MAX);
+      sizeInput.step = "5";
+      sizeInput.setAttribute("aria-label", e.label + "の文字サイズ（%）");
+      sizeInput.addEventListener("input", function(){
+        var v = parseFloat(this.value);
+        if(!isFinite(v) || v <= 0) return;   // mid-typing / cleared: keep the last good size
+        state.sizes[e.key] = Math.min(SIZE_MAX, Math.max(SIZE_MIN, v)) / 100;
+        render();
       });
-      sizeSel.addEventListener("change", function(){ state.sizes[e.key] = Number(this.value); render(); });
+      sizeInput.addEventListener("blur", function(){
+        this.value = String(Math.round(state.sizes[e.key] * 100));
+      });
+      var unit = document.createElement("span");
+      unit.textContent = "%";
+      sizeCell.appendChild(sizeInput);
+      sizeCell.appendChild(unit);
 
       row.appendChild(name);
       row.appendChild(fontSel);
-      row.appendChild(sizeSel);
+      row.appendChild(sizeCell);
 
       var alignBtn = null;
       if(e.align){
@@ -822,7 +832,7 @@
         row.appendChild(dash);
       }
 
-      fmtControls[e.key] = {font:fontSel, size:sizeSel, align:alignBtn};
+      fmtControls[e.key] = {font:fontSel, size:sizeInput, align:alignBtn};
       els.formatRows.appendChild(row);
     });
   }
@@ -911,7 +921,10 @@
     TEXT_ELEMENTS.forEach(function(e){
       var c = fmtControls[e.key];
       c.font.value = state.fonts[e.key];
-      c.size.value = String(state.sizes[e.key]);
+      // don't overwrite the box the user is typing in
+      if(document.activeElement !== c.size){
+        c.size.value = String(Math.round(state.sizes[e.key] * 100));
+      }
       if(c.align) c.align.setAttribute("aria-pressed", String(state.aligns[e.key] === "center"));
     });
   }
