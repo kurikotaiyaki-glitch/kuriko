@@ -625,7 +625,8 @@
     {key:"ruby",     label:"ふりがな",     list:JP_FONTS,    align:true},
     {key:"desc",     label:"商品詳細",     list:JP_FONTS,    align:true},
     {key:"subtitle", label:"英語名",       list:LATIN_FONTS, align:true},
-    {key:"price",    label:"価格の数字",   list:LATIN_FONTS, align:false},
+    // Japanese faces carry Latin digits too, so the price can match the title.
+    {key:"price",    label:"価格の数字",   list:ALL_FONTS,   align:false},
     {key:"allergy",  label:"アレルギー表示", list:JP_FONTS,  align:true}
   ];
 
@@ -658,7 +659,7 @@
       desc:"しっとり生地に自家製の栗あんを\n包み込んで焼き上げた、\n創業以来の看板商品です。",
       price:162, taxRate:8, allergies:DEFAULT_ALLERGIES,
       palette:"classic",
-      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"zenkaku", desc:"zenkaku", subtitle:"spacemono", price:"spacemono", allergy:"zenkaku"}
+      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"zenkaku", desc:"zenkaku", subtitle:"spacemono", price:"kanteiryu", allergy:"zenkaku"}
     },
     {
       name:"準定番", tag:"定番に次ぐ人気商品",
@@ -666,7 +667,7 @@
       desc:"ふんわり焼き上げた生地に、\n粒あんと大きな栗を\nまるごと挟みました。",
       price:194, taxRate:8, allergies:DEFAULT_ALLERGIES,
       palette:"autumn",
-      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"noto", desc:"noto", subtitle:"oswald", price:"oswald", allergy:"noto"}
+      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"noto", desc:"noto", subtitle:"oswald", price:"kanteiryu", allergy:"noto"}
     },
     {
       name:"季節限定", tag:"旬の素材でつくる品",
@@ -674,7 +675,7 @@
       desc:"道明寺粉のもちもち食感と、\n桜葉の塩気がきいた\n春だけの和菓子です。",
       price:180, taxRate:8, allergies:DEFAULT_ALLERGIES,
       palette:"sakura",
-      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"kosugi", desc:"kosugi", subtitle:"bebas", price:"bebas", allergy:"kosugi"}
+      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"kosugi", desc:"kosugi", subtitle:"bebas", price:"kanteiryu", allergy:"kosugi"}
     },
     {
       name:"期間限定", tag:"期間を区切って販売",
@@ -682,7 +683,7 @@
       desc:"大人気商品!!国産大豆の\nコクを生かした、なめらかで\n甘さ控えめのクリームです。",
       price:204, taxRate:8, allergies:DEFAULT_ALLERGIES,
       palette:"classic",
-      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"zenkaku", desc:"zenkaku", subtitle:"spacemono", price:"spacemono", allergy:"zenkaku"}
+      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"zenkaku", desc:"zenkaku", subtitle:"spacemono", price:"kanteiryu", allergy:"zenkaku"}
     }
   ];
 
