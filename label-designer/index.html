@@ -447,9 +447,47 @@
   .status[data-tone="ok"]{ color:#1e7a4f; }
   .status[data-tone="err"]{ color:var(--accent-strong); }
 
+  .saved{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:14px 16px 16px;
+    box-shadow:var(--shadow-card);
+  }
+  .saved-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
+  .saved-head h2{ font-size:13.5px; font-weight:700; display:flex; align-items:center; gap:7px; }
+  .saved-count{ font-family:'Space Mono',monospace; font-size:11px; color:var(--text-muted); font-weight:400; }
+  .saved-clear{
+    appearance:none; cursor:pointer; border:1px solid var(--border);
+    background:var(--surface-2); color:var(--text-muted);
+    border-radius:999px; padding:5px 12px; font-family:inherit; font-size:11.5px;
+  }
+  .saved-clear:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .saved-empty{ margin:0; font-size:12px; color:var(--text-muted); line-height:1.6; }
+  .saved-list{ display:grid; grid-template-columns:repeat(auto-fill,minmax(168px,1fr)); gap:8px; }
+  .saved-card{ position:relative; display:flex; }
+  .saved-open{
+    flex:1; min-width:0; appearance:none; cursor:pointer; text-align:left;
+    border:1px solid var(--border); background:var(--surface-2); color:var(--text);
+    border-radius:var(--radius-sm); padding:9px 26px 9px 10px;
+    font-family:inherit; display:flex; flex-direction:column; gap:4px; transition:.15s;
+  }
+  .saved-open:hover{ border-color:var(--accent); transform:translateY(-1px); }
+  .saved-open:focus-visible{ outline:2px solid var(--focus); outline-offset:1px; }
+  .saved-swatch{ display:flex; gap:3px; }
+  .saved-swatch i{ width:10px; height:10px; border-radius:3px; box-shadow:inset 0 0 0 1px rgba(0,0,0,.12); }
+  .saved-name{ font-size:12.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .saved-meta{ font-size:10.5px; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .saved-del{
+    position:absolute; top:5px; right:5px;
+    appearance:none; cursor:pointer; border:none; background:transparent;
+    color:var(--text-muted); font-size:14px; line-height:1; padding:3px 5px; border-radius:5px;
+  }
+  .saved-del:hover{ background:var(--accent-soft); color:var(--accent-strong); }
+
   @media print{
     body{ background:#fff; padding:0; }
-    .app-header, .controls{ display:none !important; }
+    .app-header, .controls, .toolbar, .saved{ display:none !important; }
     .layout{ display:block; max-width:none; }
     .stage{ position:static; }
     .stage-card{ box-shadow:none; border:none; background:#fff; padding:0; }
@@ -500,9 +538,19 @@
     <div class="toolbar">
       <button class="btn btn-primary" id="exportBtn" type="button">⬇ PNG画像を保存</button>
       <button class="btn btn-ghost" id="printBtn" type="button">🖨 印刷 / PDF保存</button>
+      <button class="btn btn-ghost" id="saveBtn" type="button">💾 この内容を保存</button>
       <button class="btn btn-ghost" id="randomBtn" type="button">🎲 おまかせ生成</button>
       <span class="status" id="statusOut" aria-live="polite"></span>
     </div>
+
+    <section class="saved" id="savedSection">
+      <div class="saved-head">
+        <h2>保存したラベル<span class="saved-count" id="savedCount"></span></h2>
+        <button type="button" class="saved-clear" id="savedClear" hidden>すべて削除</button>
+      </div>
+      <p class="saved-empty" id="savedEmpty">「この内容を保存」またはPNG保存をすると、作ったラベルがここに残ります。クリックするといつでも呼び戻せます。<br>※保存先はこのPCのブラウザ内です。別のPCやシークレットウィンドウには引き継がれません。</p>
+      <div class="saved-list" id="savedList"></div>
+    </section>
   </div>
 
   <div class="controls">
@@ -725,7 +773,8 @@
    "iBadge","iRuby","iTitle","iSubtitle","iDesc","iPrice","iTaxRate","taxReadout",
    "iAllergyPrefix","allergyMandatory","allergyRecommended","allergyPreviewText",
    "allergyAddRow","allergyAddInput","allergyAddCommit",
-   "exportBtn","printBtn","randomBtn","statusOut","kanteiryuNote"
+   "exportBtn","printBtn","randomBtn","saveBtn","statusOut","kanteiryuNote",
+   "savedSection","savedList","savedEmpty","savedCount","savedClear"
   ].forEach(function(id){ els[id] = document.getElementById(id); });
 
   function defaultSizes(){
@@ -1176,6 +1225,8 @@
     els.printBtn.addEventListener("click", function(){ window.print(); });
     els.randomBtn.addEventListener("click", randomize);
     els.exportBtn.addEventListener("click", exportPng);
+    els.saveBtn.addEventListener("click", function(){ saveCurrent(false); });
+    els.savedClear.addEventListener("click", onClearClick);
   }
 
   function randomize(){
@@ -1189,6 +1240,140 @@
     });
     syncInputsFromState();
     render();
+  }
+
+  // ---- saved labels (kept in this browser; the Pages site has no server) ----
+  var STORE_KEY = "kuriko-pop-labels";
+  var STORE_MAX = 60;
+
+  function readStore(){
+    try{
+      var raw = localStorage.getItem(STORE_KEY);
+      var list = raw ? JSON.parse(raw) : [];
+      return Array.isArray(list) ? list : [];
+    }catch(e){ return []; }
+  }
+  function writeStore(list){
+    try{
+      localStorage.setItem(STORE_KEY, JSON.stringify(list.slice(0, STORE_MAX)));
+      return true;
+    }catch(e){ return false; }   // private window, quota, storage blocked
+  }
+
+  // Merge onto a fresh state so an entry saved before a field existed still loads.
+  function restoreState(saved){
+    var base = cloneTemplate(TEMPLATES[0], null);
+    Object.keys(base).forEach(function(k){
+      if(!(k in saved)) return;
+      var v = saved[k];
+      if(Array.isArray(v)){ base[k] = v.slice(); }
+      else if(v && typeof v === "object"){ base[k] = Object.assign({}, base[k], v); }
+      else { base[k] = v; }
+    });
+    return base;
+  }
+
+  function saveCurrent(silent){
+    var list = readStore();
+    var snapshot = JSON.parse(JSON.stringify(state));
+    var json = JSON.stringify(snapshot);
+    var existing = -1;
+    for(var i=0;i<list.length;i++){
+      if(JSON.stringify(list[i].state) === json){ existing = i; break; }
+    }
+    if(existing === 0){
+      if(!silent) setStatus("この内容はすでに保存されています");
+      return;
+    }
+    if(existing > 0) list.splice(existing, 1);   // same label again: move it to the front
+    list.unshift({savedAt: new Date().toISOString(), state: snapshot});
+    if(!writeStore(list)){
+      setStatus("このブラウザでは保存できません（プライベートウィンドウなど）", "err");
+      return;
+    }
+    renderSaved();
+    if(!silent) setStatus("保存しました", "ok");
+  }
+
+  function renderSaved(){
+    var list = readStore();
+    els.savedList.innerHTML = "";
+    els.savedEmpty.hidden = list.length > 0;
+    els.savedClear.hidden = list.length === 0;
+    els.savedCount.textContent = list.length ? "（" + list.length + "件）" : "";
+
+    list.forEach(function(entry, idx){
+      var s = entry.state || {};
+      var colors = s.colors || {};
+      var card = document.createElement("div");
+      card.className = "saved-card";
+
+      var open = document.createElement("button");
+      open.type = "button";
+      open.className = "saved-open";
+      open.title = "このラベルを呼び戻す";
+
+      var sw = document.createElement("span");
+      sw.className = "saved-swatch";
+      [colors.frame, colors.badge, colors.accent].forEach(function(c){
+        var i = document.createElement("i");
+        i.style.background = c || "#ccc";
+        sw.appendChild(i);
+      });
+
+      var name = document.createElement("span");
+      name.className = "saved-name";
+      name.textContent = s.title || "（商品名なし）";
+
+      var meta = document.createElement("span");
+      meta.className = "saved-meta";
+      var d = new Date(entry.savedAt);
+      var badge = (s.badge || "").split("\n").join(" ");
+      meta.textContent = [badge, (s.price||0)+"円", (d.getMonth()+1)+"/"+d.getDate()]
+        .filter(Boolean).join(" ・ ");
+
+      open.appendChild(sw); open.appendChild(name); open.appendChild(meta);
+      open.addEventListener("click", function(){
+        state = restoreState(entry.state);
+        buildAllergyChips();
+        syncInputsFromState();
+        render();
+        setActiveTemplate(-1);
+        setStatus("「" + (s.title || "保存データ") + "」を読み込みました", "ok");
+      });
+
+      var del = document.createElement("button");
+      del.type = "button";
+      del.className = "saved-del";
+      del.textContent = "×";
+      del.title = "この保存を削除";
+      del.addEventListener("click", function(){
+        var cur = readStore();
+        cur.splice(idx, 1);
+        writeStore(cur);
+        renderSaved();
+      });
+
+      card.appendChild(open); card.appendChild(del);
+      els.savedList.appendChild(card);
+    });
+  }
+
+  var clearArmed = null;
+  function disarmClear(){
+    if(clearArmed){ clearTimeout(clearArmed); clearArmed = null; }
+    els.savedClear.textContent = "すべて削除";
+  }
+  function onClearClick(){
+    if(clearArmed){
+      disarmClear();
+      writeStore([]);
+      renderSaved();
+      setStatus("保存をすべて削除しました");
+      return;
+    }
+    els.savedClear.textContent = "もう一度押すと全削除";
+    clearArmed = setTimeout(disarmClear, 4000);
   }
 
   function setStatus(msg, tone){
@@ -1250,6 +1435,7 @@
       canvas.toBlob(function(blob){
         if(!blob){ setStatus("画像の生成に失敗しました","err"); els.exportBtn.disabled=false; return; }
         saveBlob(blob, exportFilename()).then(function(res){
+          saveCurrent(true);   // a label worth exporting is worth keeping in the list
           setStatus(res.status==="saved" ? "画像を保存しました" : "保存処理が完了しました", "ok");
           els.exportBtn.disabled = false;
         }).catch(function(err){
@@ -1270,5 +1456,6 @@
   bindInputs();
   applyTemplate(0);
   setActiveTemplate(0);
+  renderSaved();
 })();
 </script>
