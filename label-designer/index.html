@@ -1132,8 +1132,13 @@
     syncPosInputs();
   }
 
-  function applyTemplate(idx){
-    state = cloneTemplate(TEMPLATES[idx], state);
+  function applyTemplate(idx, prefs){
+    state = cloneTemplate(TEMPLATES[idx], prefs || state);
+    if(prefs && prefs.fonts){
+      TEXT_ELEMENTS.forEach(function(e){
+        if(prefs.fonts[e.key]) state.fonts[e.key] = prefs.fonts[e.key];
+      });
+    }
     buildAllergyChips();
     syncInputsFromState();
     render();
@@ -1193,6 +1198,7 @@
 
     syncAllergyChips();
     syncFormatControls();
+    writePrefs();
   }
 
   function bindInputs(){
@@ -1240,6 +1246,42 @@
     });
     syncInputsFromState();
     render();
+  }
+
+  // ---- 書式 preferences, remembered between visits ----
+  var PREF_KEY = "kuriko-pop-format";
+  var prefTimer = null;
+
+  function writePrefs(){
+    if(prefTimer) clearTimeout(prefTimer);
+    prefTimer = setTimeout(function(){
+      prefTimer = null;
+      try{
+        localStorage.setItem(PREF_KEY, JSON.stringify({
+          fonts: state.fonts, sizes: state.sizes, aligns: state.aligns,
+          pos: state.pos, innerPad: state.innerPad,
+          customAllergies: state.customAllergies
+        }));
+      }catch(e){ /* private window or storage disabled: just don't remember */ }
+    }, 300);
+  }
+
+  // Filled in against fresh defaults so a stored set from an older version,
+  // missing whatever has been added since, still loads.
+  function readPrefs(){
+    try{
+      var raw = localStorage.getItem(PREF_KEY);
+      if(!raw) return null;
+      var p = JSON.parse(raw) || {};
+      return {
+        fonts: p.fonts || null,
+        sizes: Object.assign(defaultSizes(), p.sizes || {}),
+        aligns: Object.assign(defaultAligns(), p.aligns || {}),
+        pos: Object.assign(defaultPos(), p.pos || {}),
+        innerPad: typeof p.innerPad === "number" ? p.innerPad : DEFAULT_INNER_PAD,
+        customAllergies: Array.isArray(p.customAllergies) ? p.customAllergies : []
+      };
+    }catch(e){ return null; }
   }
 
   // ---- saved labels (kept in this browser; the Pages site has no server) ----
@@ -1454,7 +1496,7 @@
   buildPaletteChips();
   buildFormatRows();
   bindInputs();
-  applyTemplate(0);
+  applyTemplate(0, readPrefs());
   setActiveTemplate(0);
   renderSaved();
 })();
