@@ -215,7 +215,7 @@
     display:flex; align-items:baseline; gap:.3cqw;
     font-variant-numeric: tabular-nums;
   }
-  .price-main .yen{ font-family:var(--font-desc); font-size:.42em; font-weight:700; }
+  .price-main .yen{ font-family:var(--font-yen); font-size:.42em; font-weight:700; }
   .tax-box{
     flex:none;
     border:.2cqw solid var(--accent-color,#da2419);
@@ -246,7 +246,7 @@
     display:flex; align-items:baseline; gap:.25cqw;
     font-variant-numeric: tabular-nums;
   }
-  .tax-num .yen{ font-family:var(--font-desc); font-size:.45em; }
+  .tax-num .yen{ font-family:var(--font-yen); font-size:.45em; }
 
   .allergy{
     margin:0; flex:none;
@@ -764,6 +764,10 @@
     for(var i=0;i<ALL_FONTS.length;i++){ if(ALL_FONTS[i].id===id) return ALL_FONTS[i].family; }
     return ALL_FONTS[0].family;
   }
+  function isJpFont(id){
+    for(var i=0;i<JP_FONTS.length;i++){ if(JP_FONTS[i].id===id) return true; }
+    return false;
+  }
   function isMonoFont(id){
     for(var i=0;i<ALL_FONTS.length;i++){ if(ALL_FONTS[i].id===id) return !!ALL_FONTS[i].mono; }
     return false;
@@ -1103,6 +1107,9 @@
     label.style.setProperty("--surface-line", getContrastText(state.colors.bg)==="#1a1a1a" ? "rgba(0,0,0,.14)" : "rgba(255,255,255,.2)");
     label.style.setProperty("--inner-pad", state.innerPad+"cqw");
     label.style.setProperty("--tax-word-gap", isMonoFont(state.fonts.price) ? ".1em" : ".26em");
+    // 円 follows the price face when that face has Japanese glyphs; a Latin-only
+    // price font has no 円, so it falls back to the description face.
+    label.style.setProperty("--font-yen", fontFamily(isJpFont(state.fonts.price) ? state.fonts.price : state.fonts.desc));
     label.style.setProperty("--badge-scale", state.pos.badgeSize);
 
     TEXT_ELEMENTS.forEach(function(e){
