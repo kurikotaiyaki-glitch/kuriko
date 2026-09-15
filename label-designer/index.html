@@ -155,7 +155,7 @@
     font-size: calc(1.6cqw * var(--scale-ruby,1));
     text-align: var(--align-ruby, left);
     transform: translate(var(--ruby-x,0px), var(--ruby-y,0px));
-    color: color-mix(in srgb, var(--text-color,#1a1a1a) 62%, transparent);
+    color: var(--text-62, rgba(26,26,26,.62));
     letter-spacing:.08em;
   }
   .title{
@@ -175,7 +175,7 @@
     text-align: var(--align-subtitle, left);
     transform: translate(var(--subtitle-x,0px), var(--subtitle-y,0px));
     letter-spacing:.04em;
-    color: color-mix(in srgb, var(--text-color,#1a1a1a) 78%, transparent);
+    color: var(--text-78, rgba(26,26,26,.78));
     overflow-wrap:anywhere;
   }
 
@@ -199,7 +199,7 @@
     text-align: var(--align-desc, left);
     transform: translate(var(--desc-x,0px), var(--desc-y,0px));
     line-height:1.5;
-    color: color-mix(in srgb, var(--text-color,#1a1a1a) 88%, transparent);
+    color: var(--text-88, rgba(26,26,26,.88));
     white-space:pre-line;
   }
   .price-block{
@@ -255,7 +255,7 @@
     text-align: var(--align-allergy, left);
     transform: translate(var(--allergy-x,0px), var(--allergy-y,0px));
     line-height:1.4;
-    color: color-mix(in srgb, var(--text-color,#1a1a1a) 82%, transparent);
+    color: var(--text-82, rgba(26,26,26,.82));
   }
 
   /* ---------- controls chrome ---------- */
@@ -786,6 +786,12 @@
     return kanteiryuAvailable;
   }
 
+  function withAlpha(hex, alpha){
+    hex = (hex||"#1a1a1a").replace("#","");
+    if(hex.length===3){ hex = hex.split("").map(function(c){return c+c;}).join(""); }
+    return "rgba("+parseInt(hex.substr(0,2),16)+","+parseInt(hex.substr(2,2),16)+","+parseInt(hex.substr(4,2),16)+","+alpha+")";
+  }
+
   function getContrastText(hex){
     hex = (hex||"#ffffff").replace("#","");
     if(hex.length===3){ hex = hex.split("").map(function(c){return c+c;}).join(""); }
@@ -1088,6 +1094,12 @@
     label.style.setProperty("--accent-color", state.colors.accent);
     label.style.setProperty("--text-color", state.colors.text);
     label.style.setProperty("--badge-text-color", getContrastText(state.colors.badge));
+    // Plain rgba rather than color-mix(): html2canvas can't parse the computed
+    // color() form modern browsers return for color-mix, and the PNG export
+    // would come out wrong.
+    [62,78,82,88].forEach(function(pct){
+      label.style.setProperty("--text-"+pct, withAlpha(state.colors.text, pct/100));
+    });
     label.style.setProperty("--surface-line", getContrastText(state.colors.bg)==="#1a1a1a" ? "rgba(0,0,0,.14)" : "rgba(255,255,255,.2)");
     label.style.setProperty("--inner-pad", state.innerPad+"cqw");
     label.style.setProperty("--tax-word-gap", isMonoFont(state.fonts.price) ? ".1em" : ".26em");
@@ -1177,16 +1189,38 @@
     els.statusOut.setAttribute("data-tone", tone||"");
   }
 
-  function slugify(s){
-    return (s||"pop-label").replace(/[\\/:*?"<>|\s]+/g,"-").slice(0,40);
+  // Some browsers drop a download filename outright when it contains non-ASCII
+  // characters and save an extensionless "download" instead, so the product name
+  // only goes in the filename when it survives that; a timestamp always does, and
+  // keeps a run of labels from overwriting each other.
+  function exportFilename(){
+    var name = (state.title||"").replace(/[\\/:*?"<>|\s]+/g,"-").slice(0,40);
+    if(!/^[A-Za-z0-9._-]+$/.test(name)) name = "";
+    var d = new Date();
+    function pad(n){ return (n<10?"0":"")+n; }
+    var stamp = d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+"-"+pad(d.getHours())+pad(d.getMinutes());
+    return "pop-"+stamp+(name ? "-"+name : "")+".png";
   }
 
-  var downloadsApiPromise = null;
-  function getDownloadsApi(){
-    if(!downloadsApiPromise){
-      downloadsApiPromise = (window.claude && window.claude.use) ? window.claude.use("downloads") : Promise.resolve(null);
+  // Inside the Claude artifact viewer the sandbox blocks ordinary downloads, so the
+  // host capability has to do the saving; on a normal page (GitHub Pages, a local
+  // file) there is no window.claude and a download link is what works.
+  function saveBlob(blob, filename){
+    if(window.claude && window.claude.use){
+      return window.claude.use("downloads").then(function(api){
+        if(!api) return Promise.reject({code:"unavailable"});
+        return api.save({filename:filename, data:blob});
+      });
     }
-    return downloadsApiPromise;
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 10000);
+    return Promise.resolve({status:"saved"});
   }
 
   function exportErrorMessage(code){
@@ -1208,19 +1242,16 @@
     html2canvas(els.label, {scale:3, backgroundColor:null, useCORS:true}).then(function(canvas){
       canvas.toBlob(function(blob){
         if(!blob){ setStatus("画像の生成に失敗しました","err"); els.exportBtn.disabled=false; return; }
-        getDownloadsApi().then(function(api){
-          if(!api){ setStatus("この環境では画像保存に対応していません","err"); els.exportBtn.disabled=false; return; }
-          api.save({filename: slugify(state.title)+"-pop.png", data: blob}).then(function(res){
-            setStatus(res.status==="saved" ? "画像を保存しました" : "保存処理が完了しました", "ok");
-            els.exportBtn.disabled = false;
-          }).catch(function(err){
-            setStatus(exportErrorMessage(err && err.code), "err");
-            els.exportBtn.disabled = false;
-          });
+        saveBlob(blob, exportFilename()).then(function(res){
+          setStatus(res.status==="saved" ? "画像を保存しました" : "保存処理が完了しました", "ok");
+          els.exportBtn.disabled = false;
+        }).catch(function(err){
+          setStatus(exportErrorMessage(err && err.code), "err");
+          els.exportBtn.disabled = false;
         });
       }, "image/png");
-    }).catch(function(){
-      setStatus("画像の生成に失敗しました","err");
+    }).catch(function(err){
+      setStatus("画像の生成に失敗しました（"+((err && err.message) || "原因不明")+"）","err");
       els.exportBtn.disabled = false;
     });
   }
