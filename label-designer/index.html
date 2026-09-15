@@ -355,12 +355,34 @@
   /* per-element format rows: font / size / centering */
   .fmt-head, .fmt-row{
     display:grid;
-    grid-template-columns: minmax(84px,1fr) minmax(104px,1.25fr) 90px 66px;
+    grid-template-columns: minmax(76px,1fr) minmax(96px,1.2fr) 84px 58px 30px;
     gap:8px; align-items:center;
   }
   .fmt-head{ padding-bottom:6px; }
   .fmt-head span{ font-size:11px; font-weight:700; color:var(--text-muted); letter-spacing:.03em; }
-  .fmt-row{ padding:7px 0; border-top:1px solid var(--border); }
+  .fmt-item{ border-top:1px solid var(--border); }
+  .fmt-row{ padding:7px 0; }
+  .fmt-more{
+    appearance:none; cursor:pointer; width:100%;
+    border:1px solid var(--border); background:var(--surface-2); color:var(--text);
+    border-radius:var(--radius-sm); padding:7px 0; font-size:10px; line-height:1;
+  }
+  .fmt-more:hover{ border-color:var(--accent); }
+  .fmt-more[aria-expanded="true"]{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-strong); }
+  .fmt-more:focus-visible{ outline:2px solid var(--focus); outline-offset:1px; }
+  .fmt-detail{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(112px,1fr));
+    gap:10px; padding:11px 12px 12px; margin:0 0 9px;
+    background:var(--surface-2); border-radius:var(--radius-sm);
+  }
+  .fmt-detail label{ display:block; font-size:11px; font-weight:600; color:var(--text-muted); margin-bottom:5px; }
+  .fmt-detail input{
+    width:100%; border:1px solid var(--border); background:var(--surface);
+    color:var(--text); border-radius:var(--radius-sm); padding:6px 8px;
+    font-family:inherit; font-size:12.5px;
+  }
+  .fmt-detail input:focus-visible{ outline:2px solid var(--focus); outline-offset:1px; }
+  .fmt-detail .note{ grid-column:1/-1; margin:0; font-size:11px; color:var(--text-muted); }
   .fmt-name{ font-size:12.5px; font-weight:600; }
   .fmt-row select,
   .fmt-row input[type="number"]{
@@ -384,7 +406,7 @@
   .fmt-none{ text-align:center; font-size:12px; color:var(--text-muted); }
   @media (max-width:560px){
     .fmt-head{ display:none; }
-    .fmt-row{ grid-template-columns: 1fr 90px 66px; }
+    .fmt-row{ grid-template-columns: 1fr 84px 58px 30px; }
     .fmt-name{ grid-column:1 / -1; color:var(--text-muted); }
   }
 
@@ -508,7 +530,7 @@
       <h2><span class="num">3</span>書式（テキストごとに指定）</h2>
       <p class="hint">フォント・文字サイズ・中央配置を、テキスト1つずつ設定できます。文字サイズは100%が標準です。</p>
       <div class="fmt-head">
-        <span>テキスト</span><span>フォント</span><span>文字サイズ（%）</span><span>配置</span>
+        <span>テキスト</span><span>フォント</span><span>文字サイズ（%）</span><span>配置</span><span>位置</span>
       </div>
       <div id="formatRows"></div>
       <p class="font-note" id="kanteiryuNote" hidden>ＤＦ勘亭流はこのPCにインストールされていないため、代わりに「筆文字（太）」で表示しています。勘亭流で印刷・書き出しをする場合は、ダイナフォントが入ったPCで開いてください。</p>
@@ -558,23 +580,6 @@
         </div>
       </div>
       <div class="allergy-line-preview" id="allergyPreviewText"></div>
-    </section>
-
-    <section class="panel">
-      <h2><span class="num">6</span>位置の微調整</h2>
-      <p class="hint">数値は白枠の幅に対する％です。0が標準の位置で、マイナスにすると左・上へ動きます。</p>
-      <h3 class="sub">商品名</h3>
-      <div class="field-grid">
-        <div class="field"><label for="posTitleX">左右位置</label><input type="number" id="posTitleX" step="0.5" min="-40" max="40" value="0"></div>
-        <div class="field"><label for="posTitleY">上下位置</label><input type="number" id="posTitleY" step="0.5" min="-20" max="20" value="0"></div>
-      </div>
-      <h3 class="sub">バッジ（丸）</h3>
-      <div class="field-grid">
-        <div class="field"><label for="posBadgeSize">大きさ（%）</label><input type="number" id="posBadgeSize" step="5" min="20" max="300" value="100"></div>
-        <div class="field"><label for="posBadgeX">左右位置</label><input type="number" id="posBadgeX" step="0.5" min="-40" max="40" value="0"></div>
-        <div class="field"><label for="posBadgeY">上下位置</label><input type="number" id="posBadgeY" step="0.5" min="-20" max="20" value="0"></div>
-      </div>
-      <p class="hint" style="margin:14px 0 0;">バッジ内の文字の大きさは「書式」のバッジ文言で調整できます。</p>
     </section>
 
   </div>
@@ -683,15 +688,21 @@
 
   var DEFAULT_INNER_PAD = 0.8;
 
-  // Fine positioning. `factor` converts between the number shown in the box and
-  // the value kept in state (badge size is a multiplier shown as a percentage).
-  var POS_INPUTS = [
-    {id:"posTitleX",    key:"titleX",    min:-40, max:40,  factor:1},
-    {id:"posTitleY",    key:"titleY",    min:-20, max:20,  factor:1},
-    {id:"posBadgeSize", key:"badgeSize", min:20,  max:300, factor:100},
-    {id:"posBadgeX",    key:"badgeX",    min:-40, max:40,  factor:1},
-    {id:"posBadgeY",    key:"badgeY",    min:-20, max:20,  factor:1}
-  ];
+  // Fine positioning, folded into the 書式 row it belongs to. `factor` converts
+  // between the number shown in the box and the value kept in state (the badge
+  // size is a multiplier shown as a percentage).
+  var POS_FIELDS = {
+    title: [
+      {key:"titleX", label:"左右位置", min:-40, max:40, step:0.5, factor:1},
+      {key:"titleY", label:"上下位置", min:-20, max:20, step:0.5, factor:1}
+    ],
+    badge: [
+      {key:"badgeSize", label:"丸の大きさ（%）", min:20, max:300, step:5, factor:100},
+      {key:"badgeX",    label:"左右位置",        min:-40, max:40, step:0.5, factor:1},
+      {key:"badgeY",    label:"上下位置",        min:-20, max:20, step:0.5, factor:1}
+    ]
+  };
+  var posControls = [];   // {field, input} pairs, filled while building the rows
   function defaultPos(){ return {titleX:0, titleY:0, badgeSize:1, badgeX:0, badgeY:0}; }
 
   var state = null;
@@ -704,7 +715,6 @@
    "iBadge","iRuby","iTitle","iSubtitle","iDesc","iPrice","iTaxRate","taxReadout",
    "iAllergyPrefix","allergyMandatory","allergyRecommended","allergyPreviewText",
    "allergyAddRow","allergyAddInput","allergyAddCommit",
-   "posTitleX","posTitleY","posBadgeSize","posBadgeX","posBadgeY",
    "exportBtn","printBtn","randomBtn","statusOut","kanteiryuNote"
   ].forEach(function(id){ els[id] = document.getElementById(id); });
 
@@ -881,8 +891,63 @@
         row.appendChild(dash);
       }
 
+      var item = document.createElement("div");
+      item.className = "fmt-item";
+      item.appendChild(row);
+
+      var fields = POS_FIELDS[e.key];
+      if(fields){
+        var detail = document.createElement("div");
+        detail.className = "fmt-detail";
+        detail.hidden = true;
+
+        fields.forEach(function(f){
+          var wrap = document.createElement("div");
+          var lab = document.createElement("label");
+          var input = document.createElement("input");
+          input.type = "number";
+          input.min = String(f.min); input.max = String(f.max); input.step = String(f.step);
+          lab.textContent = f.label;
+          lab.htmlFor = input.id = "pos-" + f.key;
+          input.addEventListener("input", function(){
+            var v = parseFloat(this.value);
+            if(!isFinite(v)) return;   // mid-typing ("-", "") keeps the last good value
+            state.pos[f.key] = Math.min(f.max, Math.max(f.min, v)) / f.factor;
+            render();
+          });
+          input.addEventListener("blur", function(){
+            this.value = String(+(state.pos[f.key] * f.factor).toFixed(1));
+          });
+          wrap.appendChild(lab); wrap.appendChild(input);
+          detail.appendChild(wrap);
+          posControls.push({field:f, input:input});
+        });
+
+        var note = document.createElement("p");
+        note.className = "note";
+        note.textContent = "白枠の幅に対する％。0が標準位置で、マイナスで左・上に動きます。";
+        detail.appendChild(note);
+
+        var more = document.createElement("button");
+        more.type = "button";
+        more.className = "fmt-more";
+        more.textContent = "▼";
+        more.title = e.label + "の位置を調整";
+        more.setAttribute("aria-expanded","false");
+        more.addEventListener("click", function(){
+          var open = detail.hidden;
+          detail.hidden = !open;
+          more.setAttribute("aria-expanded", String(open));
+          more.textContent = open ? "▲" : "▼";
+        });
+        row.appendChild(more);
+        item.appendChild(detail);
+      }else{
+        row.appendChild(document.createElement("span"));
+      }
+
       fmtControls[e.key] = {font:fontSel, size:sizeInput, align:alignBtn};
-      els.formatRows.appendChild(row);
+      els.formatRows.appendChild(item);
     });
   }
 
@@ -978,10 +1043,9 @@
     });
   }
   function syncPosInputs(){
-    POS_INPUTS.forEach(function(f){
-      var el = els[f.id];
-      if(document.activeElement === el) return;   // don't fight the box being typed in
-      el.value = String(+(state.pos[f.key] * f.factor).toFixed(1));
+    posControls.forEach(function(c){
+      if(document.activeElement === c.input) return;   // don't fight the box being typed in
+      c.input.value = String(+(state.pos[c.field.key] * c.field.factor).toFixed(1));
     });
   }
   function syncInputsFromState(){
@@ -1076,19 +1140,6 @@
       state.innerPad = Number(this.value);
       els.lInnerPadVal.textContent = state.innerPad.toFixed(1);
       render();
-    });
-
-    POS_INPUTS.forEach(function(f){
-      var el = els[f.id];
-      el.addEventListener("input", function(){
-        var v = parseFloat(this.value);
-        if(!isFinite(v)) return;   // mid-typing ("-", "") keeps the last good value
-        state.pos[f.key] = Math.min(f.max, Math.max(f.min, v)) / f.factor;
-        render();
-      });
-      el.addEventListener("blur", function(){
-        this.value = String(+(state.pos[f.key] * f.factor).toFixed(1));
-      });
     });
 
     els.allergyAddCommit.addEventListener("click", addCustomAllergen);
