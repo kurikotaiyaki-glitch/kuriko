@@ -570,6 +570,22 @@
   #labelTall .tax-box{ border-width:.25cqw; border-radius:1.2cqw; padding:.8cqw 1.2cqw; }
 
   .preset-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:9px; margin-bottom:4px; }
+  .preset-card-wrap{ position:relative; display:flex; }
+  .preset-card-wrap .preset-card{ flex:1; min-width:0; padding-right:52px; }
+  .preset-tools{ position:absolute; top:5px; right:5px; display:flex; gap:2px; }
+  .preset-tools button{
+    appearance:none; cursor:pointer; border:none; background:transparent;
+    color:var(--text-muted); font-size:12px; line-height:1; padding:3px 4px; border-radius:5px;
+    font-family:inherit;
+  }
+  .preset-tools button:hover{ background:var(--accent-soft); color:var(--accent-strong); }
+  .preset-add{ align-items:center; justify-content:center; border-style:dashed; color:var(--accent-strong); font-weight:700; font-size:12.5px; }
+  .product-form{
+    margin-top:14px; padding:14px 14px 16px;
+    background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-sm);
+  }
+  .product-form h3.sub{ margin-top:0; }
+  .product-form-actions{ display:flex; gap:8px; align-items:center; margin-top:14px; }
   .preset-card{
     appearance:none; cursor:pointer; text-align:left;
     border:1px solid var(--border); background:var(--surface-2); color:var(--text);
@@ -694,6 +710,15 @@
       <h2><span class="num">1</span>商品を選ぶ</h2>
       <p class="hint" id="presetHint">クリックするとそのPOPに切り替わります。</p>
       <div class="preset-grid" id="presetGrid"></div>
+
+      <div class="product-form" id="productForm" hidden>
+        <h3 class="sub" id="productFormTitle">商品を追加</h3>
+        <div class="field-grid" id="productFields"></div>
+        <div class="product-form-actions">
+          <button type="button" class="btn-sm" id="productSave">この内容で登録</button>
+          <button type="button" class="saved-clear" id="productCancel">キャンセル</button>
+        </div>
+      </div>
 
       <h3 class="sub">金額の修正</h3>
       <div class="field-grid">
@@ -911,27 +936,27 @@
   var PRESETS_WIDE = [
     {id:"ogura", name:"小倉あん", badge:"", ruby:"おぐら", title:"小倉あん", subtitle:"Ogura Red Bean",
      desc:"厳選した北海道産小豆を使用。\n甘さ控えめに炊き上げた\nこだわりの粒あんです。",
-     price:195, taxRate:8, allergies:["卵","乳成分","小麦","大豆"],
+     price:195, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
      colors:{frame:"#8e2239", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
     {id:"shiro", name:"白あん", badge:"期間\n限定", ruby:"しろ", title:"白あん", subtitle:"White Bean",
      desc:"北海道産の手亡豆を使用。\n上品で奥深い甘みのあんこです。",
-     price:195, taxRate:8, allergies:["卵","乳成分","小麦","大豆"],
+     price:195, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
      colors:{frame:"#efe4b0", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
     {id:"cream", name:"プレミアムクリーム", badge:"", ruby:"", title:"プレミアムクリーム", subtitle:"Premium Cream",
      desc:"北海道ミルク使用。\n生地に合わせて独自開発した\nオリジナルカスタードクリーム！",
-     price:204, taxRate:8, allergies:["卵","乳成分","小麦","大豆"],
+     price:204, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
      colors:{frame:"#e9b81f", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
     {id:"murasaki", name:"紫いもあん", badge:"期間\n限定", ruby:"むらさき", title:"紫いもあん", subtitle:"Purple Sweet Potato",
      desc:"紫いもの風味を生かした、\n素朴で飽きのこないおいしさ！",
-     price:213, taxRate:8, allergies:["卵","乳成分","小麦","大豆"],
+     price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
      colors:{frame:"#7a2e7e", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
     {id:"kuriko", name:"くりこあん", badge:"", ruby:"", title:"くりこあん", subtitle:"Chestnut & Ogura Red Bean",
      desc:"当店看板商品！厳選した\n小豆を使用したこしあんに、\n栗の甘露煮をたっぷり入れました。",
-     price:241, taxRate:8, allergies:["卵","乳成分","小麦","大豆"],
+     price:241, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
      colors:{frame:"#5e2340", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
     {id:"beniharuka", name:"紅はるかあん", badge:"期間\n限定", ruby:"べに", title:"紅はるかあん", subtitle:"Beniharuka Sweet Potato",
      desc:"さつま芋の中でも糖度の高い\n「紅はるか」をあんこにしました。\nなめらかで濃厚な甘さ！",
-     price:213, taxRate:8, allergies:["卵","乳成分","小麦","大豆"],
+     price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
      colors:{frame:"#f0c419", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}}
   ];
 
@@ -995,7 +1020,8 @@
    "tabbar","labelTall","tallHeader","tallHeaderHint","tallBadge","tallTitle","tallSub",
    "tallDots","tallDesc","tallPrice","tallTaxPrice","tallAllergy","tallCopy",
    "presetPanel","presetGrid","presetHint","presetPrice","presetTaxRate","presetTaxOut",
-   "headerUploadRow","headerFile","headerClear"
+   "headerUploadRow","headerFile","headerClear",
+   "productForm","productFormTitle","productFields","productSave","productCancel"
   ].forEach(function(id){ els[id] = document.getElementById(id); });
 
   function defaultSizes(){
@@ -1019,6 +1045,7 @@
       badge:t.badge, ruby:t.ruby, title:t.title, subtitle:t.subtitle, desc:t.desc,
       price:t.price, taxRate:t.taxRate, allergies:t.allergies.slice(),
       allergyPrefix: ALLERGY_PREFIX,
+      allergyText: null,
       colors:{frame:p.frame, bg:p.bg, badge:p.badge, accent:p.accent, text:p.text},
       fonts: fonts,
       sizes: carry ? carry.sizes : defaultSizes(),
@@ -1411,7 +1438,9 @@
     els.taxReadout.textContent = taxIncluded + "円";
 
     var ordered = allAllergens().filter(function(a){ return state.allergies.indexOf(a) >= 0; });
-    var allergyText = state.allergyPrefix + (ordered.length ? " " + ordered.join("・") : " 該当原材料なし");
+    var allergyText = state.allergyText != null
+      ? state.allergyText
+      : state.allergyPrefix + (ordered.length ? " " + ordered.join("・") : " 該当原材料なし");
     els.allergyOut.textContent = allergyText;
     els.allergyPreviewText.textContent = allergyText;
 
@@ -1462,8 +1491,10 @@
     els.presetPrice.addEventListener("input", savePriceEdit);
     els.presetTaxRate.addEventListener("change", savePriceEdit);
     els.headerFile.addEventListener("change", function(){ loadHeaderImage(this.files && this.files[0]); this.value = ""; });
+    els.productSave.addEventListener("click", submitProductForm);
+    els.productCancel.addEventListener("click", closeProductForm);
     els.headerClear.addEventListener("click", function(){
-      delete headerImages[currentPreset().id];
+      delete headerImages[currentProduct().id];
       writeJson(IMG_KEY, headerImages);
       applyPreset();
     });
@@ -1652,13 +1683,58 @@
     clearArmed = setTimeout(disarmClear, 4000);
   }
 
-  // ---- tabs: two fixed POP sizes (price-only) plus the free editor ----
-  var PRICE_KEY = "kuriko-pop-prices";
+  // ---- tabs: two POP sizes holding the shop's own products, plus the free editor ----
+  // Products are registered once and then only their price gets touched, so the whole
+  // record lives in this browser and the built-in ones are just the starting data.
+  var PRODUCTS_KEY = "kuriko-pop-products";
   var IMG_KEY = "kuriko-pop-headers";
   var mode = "wide";
   var chosen = {wide:0, tall:0};
-  var priceEdits = {};     // "wide:ogura" -> {price, taxRate}
-  var headerImages = {};   // tall preset id -> data URL
+  var products = {wide:[], tall:[]};
+  var headerImages = {};   // product id -> data URL
+  var editingIndex = -1;   // -1 = adding, otherwise the product being edited
+
+  var WIDE_FIELDS = [
+    {key:"name",        label:"一覧での表示名", type:"text"},
+    {key:"badge",       label:"バッジ文言（空欄でバッジなし）", type:"textarea", rows:2},
+    {key:"ruby",        label:"ふりがな", type:"text"},
+    {key:"title",       label:"商品名", type:"text"},
+    {key:"subtitle",    label:"英語名", type:"text", wide:true},
+    {key:"desc",        label:"説明文（改行OK）", type:"textarea", rows:3, wide:true},
+    {key:"allergyText", label:"アレルギー表示", type:"text", wide:true},
+    {key:"price",       label:"価格（税抜・円）", type:"number"},
+    {key:"taxRate",     label:"消費税率", type:"tax"},
+    {key:"colors.frame",  label:"枠の色", type:"color"},
+    {key:"colors.bg",     label:"背景色", type:"color"},
+    {key:"colors.accent", label:"バッジ・価格の色", type:"color"},
+    {key:"colors.text",   label:"文字色", type:"color"}
+  ];
+  var TALL_FIELDS = [
+    {key:"name",        label:"一覧での表示名", type:"text"},
+    {key:"badge",       label:"バッジ文言（空欄でバッジなし）", type:"textarea", rows:2},
+    {key:"title",       label:"商品名", type:"text"},
+    {key:"sub",         label:"サブタイトル", type:"text", wide:true},
+    {key:"desc",        label:"説明文（改行OK）", type:"textarea", rows:3, wide:true},
+    {key:"allergyText", label:"アレルギー表示", type:"text", wide:true},
+    {key:"copy",        label:"下部の表記", type:"text", wide:true},
+    {key:"price",       label:"価格（税抜・円）", type:"number"},
+    {key:"taxRate",     label:"消費税率", type:"tax"},
+    {key:"header",      label:"ヘッダーの色", type:"color"},
+    {key:"body",        label:"本体の色", type:"color"}
+  ];
+  function fieldsFor(m){ return m === "tall" ? TALL_FIELDS : WIDE_FIELDS; }
+
+  function blankProduct(m){
+    if(m === "tall"){
+      return {id:newId(), name:"新しい商品", badge:"店舗\n限定", title:"", sub:"", desc:"",
+              price:200, taxRate:8, allergyText:ALLERGY_PREFIX+" 卵・小麦・乳成分・大豆",
+              copy:"", header:"#f6c2d9", body:"#e60012", badge_color:ACCENT_RED};
+    }
+    return {id:newId(), name:"新しい商品", badge:"", ruby:"", title:"", subtitle:"", desc:"",
+            price:200, taxRate:8, allergyText:ALLERGY_PREFIX+" 卵・小麦・乳成分・大豆",
+            colors:{frame:"#f6de9e", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}};
+  }
+  function newId(){ return "p" + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 
   function readJson(key){
     try{ var raw = localStorage.getItem(key); return raw ? (JSON.parse(raw) || {}) : {}; }
@@ -1668,75 +1744,197 @@
     try{ localStorage.setItem(key, JSON.stringify(obj)); return true; }
     catch(e){ return false; }
   }
-
-  function presetsFor(m){ return m === "tall" ? PRESETS_TALL : PRESETS_WIDE; }
-  function currentPreset(){ return presetsFor(mode)[chosen[mode]] || presetsFor(mode)[0]; }
-  function priceOf(m, preset){
-    var edit = priceEdits[m + ":" + preset.id];
-    return {
-      price: edit && typeof edit.price === "number" ? edit.price : preset.price,
-      taxRate: edit && typeof edit.taxRate === "number" ? edit.taxRate : preset.taxRate
+  function loadProducts(){
+    var stored = readJson(PRODUCTS_KEY);
+    products = {
+      wide: Array.isArray(stored.wide) && stored.wide.length ? stored.wide : JSON.parse(JSON.stringify(PRESETS_WIDE)),
+      tall: Array.isArray(stored.tall) && stored.tall.length ? stored.tall : JSON.parse(JSON.stringify(PRESETS_TALL))
     };
   }
+  function saveProducts(){
+    if(!writeJson(PRODUCTS_KEY, products)){
+      setStatus("このブラウザでは商品を記録できません（プライベートウィンドウなど）", "err");
+    }
+  }
+
+  function listFor(m){ return products[m] || []; }
+  function currentProduct(){
+    var list = listFor(mode);
+    if(chosen[mode] >= list.length) chosen[mode] = 0;
+    return list[chosen[mode]];
+  }
   function taxIncluded(price, rate){ return Math.floor(price * (1 + rate/100)); }
+  function getPath(obj, path){
+    return path.split(".").reduce(function(o,k){ return o ? o[k] : undefined; }, obj);
+  }
+  function setPath(obj, path, value){
+    var parts = path.split("."), last = parts.pop();
+    var target = parts.reduce(function(o,k){ if(!o[k]) o[k] = {}; return o[k]; }, obj);
+    target[last] = value;
+  }
 
   function setMode(next){
     mode = next;
     Array.prototype.forEach.call(els.tabbar.children, function(b){
       b.setAttribute("aria-selected", String(b.dataset.mode === mode));
     });
-    var preset = mode === "free";
-    els.presetPanel.hidden = preset;
-    Array.prototype.forEach.call(document.querySelectorAll(".editor-panel"), function(p){ p.hidden = !preset; });
-    els.savedSection.hidden = !preset;
-    els.saveBtn.hidden = !preset;
-    els.randomBtn.hidden = !preset;
+    var free = mode === "free";
+    els.presetPanel.hidden = free;
+    Array.prototype.forEach.call(document.querySelectorAll(".editor-panel"), function(p){ p.hidden = !free; });
+    els.savedSection.hidden = !free;
+    els.saveBtn.hidden = !free;
+    els.randomBtn.hidden = !free;
     els.label.hidden = (mode === "tall");
     els.labelTall.hidden = (mode !== "tall");
     els.headerUploadRow.hidden = (mode !== "tall");
-    if(mode === "free"){ render(); }
+    closeProductForm();
+    if(free){ render(); }
     else { buildPresetGrid(); applyPreset(); }
   }
 
   function buildPresetGrid(){
-    var list = presetsFor(mode);
+    var list = listFor(mode);
     els.presetHint.textContent = mode === "tall"
       ? "キティ型POPの商品です。選んでから金額を直してください。"
       : "横長POPの商品です。選んでから金額を直してください。";
     els.presetGrid.innerHTML = "";
+
     list.forEach(function(p, i){
+      var card = document.createElement("div");
+      card.className = "preset-card-wrap";
+
       var b = document.createElement("button");
       b.type = "button";
       b.className = "preset-card";
       b.setAttribute("aria-pressed", String(i === chosen[mode]));
       var bar = document.createElement("span");
       bar.className = "preset-bar";
-      var c1 = mode === "tall" ? p.header : p.colors.frame;
-      var c2 = mode === "tall" ? p.body : p.colors.accent;
-      bar.style.background = "linear-gradient(90deg,"+c1+" 50%,"+c2+" 50%)";
+      var c1 = mode === "tall" ? p.header : (p.colors && p.colors.frame);
+      var c2 = mode === "tall" ? p.body : (p.colors && p.colors.accent);
+      bar.style.background = "linear-gradient(90deg,"+(c1||"#ccc")+" 50%,"+(c2||"#ccc")+" 50%)";
       var nm = document.createElement("b");
-      nm.textContent = p.name;
+      nm.textContent = p.name || p.title || "（名前なし）";
       var pr = document.createElement("span");
-      var money = priceOf(mode, p);
-      pr.textContent = money.price + "円 / 税込" + taxIncluded(money.price, money.taxRate) + "円";
+      pr.textContent = p.price + "円 / 税込" + taxIncluded(p.price, p.taxRate) + "円";
       b.appendChild(bar); b.appendChild(nm); b.appendChild(pr);
       b.addEventListener("click", function(){
         chosen[mode] = i;
+        closeProductForm();
         buildPresetGrid();
         applyPreset();
       });
-      els.presetGrid.appendChild(b);
+
+      var tools = document.createElement("div");
+      tools.className = "preset-tools";
+      var edit = document.createElement("button");
+      edit.type = "button"; edit.textContent = "✎"; edit.title = "この商品の内容を修正";
+      edit.addEventListener("click", function(){ chosen[mode] = i; buildPresetGrid(); applyPreset(); openProductForm(i); });
+      var del = document.createElement("button");
+      del.type = "button"; del.textContent = "×"; del.title = "この商品を削除";
+      del.addEventListener("click", function(){
+        if(del.dataset.armed !== "1"){
+          del.dataset.armed = "1"; del.textContent = "本当に削除?";
+          setTimeout(function(){ del.dataset.armed = ""; del.textContent = "×"; }, 4000);
+          return;
+        }
+        listFor(mode).splice(i, 1);
+        if(!listFor(mode).length) listFor(mode).push(blankProduct(mode));
+        if(chosen[mode] >= listFor(mode).length) chosen[mode] = listFor(mode).length - 1;
+        saveProducts(); closeProductForm(); buildPresetGrid(); applyPreset();
+      });
+      tools.appendChild(edit); tools.appendChild(del);
+
+      card.appendChild(b); card.appendChild(tools);
+      els.presetGrid.appendChild(card);
     });
+
+    var add = document.createElement("button");
+    add.type = "button";
+    add.className = "preset-card preset-add";
+    add.textContent = "＋ 商品を追加";
+    add.addEventListener("click", function(){ openProductForm(-1); });
+    els.presetGrid.appendChild(add);
+  }
+
+  // ---- registering / editing a product ----
+  function openProductForm(index){
+    editingIndex = index;
+    var p = index < 0 ? blankProduct(mode) : JSON.parse(JSON.stringify(listFor(mode)[index]));
+    els.productFormTitle.textContent = index < 0 ? "商品を追加" : "商品の内容を修正";
+    els.productFields.innerHTML = "";
+
+    fieldsFor(mode).forEach(function(f){
+      var wrap = document.createElement("div");
+      wrap.className = "field" + (f.wide ? " wide" : "");
+      var lab = document.createElement("label");
+      lab.textContent = f.label;
+      var input;
+      if(f.type === "textarea"){
+        input = document.createElement("textarea");
+        input.rows = f.rows || 2;
+      }else if(f.type === "tax"){
+        input = document.createElement("select");
+        [[8,"8%（軽減税率）"],[10,"10%"]].forEach(function(o){
+          var opt = document.createElement("option");
+          opt.value = String(o[0]); opt.textContent = o[1];
+          input.appendChild(opt);
+        });
+      }else{
+        input = document.createElement("input");
+        input.type = f.type === "number" ? "number" : (f.type === "color" ? "color" : "text");
+        if(f.type === "number"){ input.min = "0"; input.step = "1"; }
+      }
+      var v = getPath(p, f.key);
+      input.value = v == null ? "" : String(v);
+      input.dataset.key = f.key;
+      lab.htmlFor = input.id = "pf-" + f.key.replace(".", "-");
+      wrap.appendChild(lab); wrap.appendChild(input);
+      els.productFields.appendChild(wrap);
+    });
+
+    els.productForm.hidden = false;
+    els.productFields.querySelector("input,textarea,select").focus();
+  }
+  function closeProductForm(){
+    editingIndex = -2;
+    els.productForm.hidden = true;
+  }
+  function submitProductForm(){
+    var base = editingIndex >= 0
+      ? JSON.parse(JSON.stringify(listFor(mode)[editingIndex]))
+      : blankProduct(mode);
+    Array.prototype.forEach.call(els.productFields.querySelectorAll("[data-key]"), function(el){
+      var key = el.dataset.key;
+      var value = el.value;
+      if(key === "price" || key === "taxRate"){
+        var n = parseFloat(value);
+        value = isFinite(n) ? Math.round(n) : (key === "price" ? 0 : 8);
+      }
+      setPath(base, key, value);
+    });
+    if(!base.name) base.name = base.title || "（名前なし）";
+    if(editingIndex >= 0){
+      listFor(mode)[editingIndex] = base;
+      chosen[mode] = editingIndex;
+    }else{
+      listFor(mode).push(base);
+      chosen[mode] = listFor(mode).length - 1;
+    }
+    saveProducts();
+    closeProductForm();
+    buildPresetGrid();
+    applyPreset();
+    setStatus("商品を登録しました", "ok");
   }
 
   function applyPreset(){
-    var p = currentPreset();
-    var money = priceOf(mode, p);
-    els.presetPrice.value = money.price;
-    els.presetTaxRate.value = String(money.taxRate);
-    els.presetTaxOut.textContent = taxIncluded(money.price, money.taxRate) + "円";
+    var p = currentProduct();
+    if(!p) return;
+    els.presetPrice.value = p.price;
+    els.presetTaxRate.value = String(p.taxRate);
+    els.presetTaxOut.textContent = taxIncluded(p.price, p.taxRate) + "円";
 
-    if(mode === "tall"){ renderTall(p, money); return; }
+    if(mode === "tall"){ renderTall(p); return; }
 
     // the wide POP reuses the editor's own layout and the stored 書式
     var prefs = readPrefs();
@@ -1744,20 +1942,21 @@
     if(prefs && prefs.fonts){
       TEXT_ELEMENTS.forEach(function(e){ if(prefs.fonts[e.key]) state.fonts[e.key] = prefs.fonts[e.key]; });
     }
-    state.badge = p.badge; state.ruby = p.ruby; state.title = p.title;
-    state.subtitle = p.subtitle; state.desc = p.desc;
-    state.price = money.price; state.taxRate = money.taxRate;
-    state.allergies = p.allergies.slice();
-    state.colors = {frame:p.colors.frame, bg:p.colors.bg, badge:p.colors.badge,
-                    accent:p.colors.accent, text:p.colors.text};
+    state.badge = p.badge || ""; state.ruby = p.ruby || ""; state.title = p.title || "";
+    state.subtitle = p.subtitle || ""; state.desc = p.desc || "";
+    state.price = p.price; state.taxRate = p.taxRate;
+    state.allergyText = p.allergyText || "";
+    var c = p.colors || {};
+    state.colors = {frame:c.frame||"#f6de9e", bg:c.bg||"#ffffff", badge:c.badge||c.accent||ACCENT_RED,
+                    accent:c.accent||ACCENT_RED, text:c.text||"#1a1a1a"};
     render();
   }
 
-  function renderTall(p, money){
+  function renderTall(p){
     var t = els.labelTall;
     t.style.setProperty("--header-color", p.header);
     t.style.setProperty("--body-color", p.body);
-    t.style.setProperty("--badge-color", p.badge_color);
+    t.style.setProperty("--badge-color", p.badge_color || ACCENT_RED);
     t.style.setProperty("--accent-color", ACCENT_RED);
     t.style.setProperty("--frame-color", p.body);
     t.style.setProperty("--copy-color", getContrastText(p.body));
@@ -1772,22 +1971,25 @@
     t.style.setProperty("--header-image", img ? 'url("'+img+'")' : "none");
     els.tallHeaderHint.hidden = !!img;
 
-    els.tallBadge.textContent = p.badge;
-    els.tallTitle.textContent = p.title;
-    els.tallSub.textContent = p.sub;
-    els.tallDesc.textContent = p.desc;
-    els.tallPrice.textContent = money.price;
-    els.tallTaxPrice.textContent = taxIncluded(money.price, money.taxRate);
-    els.tallAllergy.textContent = p.allergyText;
-    els.tallCopy.textContent = p.copy;
+    els.tallBadge.textContent = p.badge || "";
+    els.tallBadge.parentNode.hidden = !(p.badge || "").trim();
+    els.tallTitle.textContent = p.title || "";
+    els.tallSub.textContent = p.sub || "";
+    els.tallDesc.textContent = p.desc || "";
+    els.tallPrice.textContent = p.price;
+    els.tallTaxPrice.textContent = taxIncluded(p.price, p.taxRate);
+    els.tallAllergy.textContent = p.allergyText || "";
+    els.tallCopy.textContent = p.copy || "";
+    els.tallCopy.hidden = !(p.copy || "").trim();
   }
 
   function savePriceEdit(){
-    var p = currentPreset();
+    var p = currentProduct();
     var v = parseFloat(els.presetPrice.value);
-    if(!isFinite(v) || v < 0) return;
-    priceEdits[mode + ":" + p.id] = {price: Math.round(v), taxRate: Number(els.presetTaxRate.value)};
-    writeJson(PRICE_KEY, priceEdits);
+    if(!p || !isFinite(v) || v < 0) return;
+    p.price = Math.round(v);
+    p.taxRate = Number(els.presetTaxRate.value);
+    saveProducts();
     buildPresetGrid();
     applyPreset();
   }
@@ -1796,7 +1998,7 @@
     if(!file) return;
     var reader = new FileReader();
     reader.onload = function(){
-      var p = currentPreset();
+      var p = currentProduct();
       headerImages[p.id] = reader.result;
       if(!writeJson(IMG_KEY, headerImages)){
         setStatus("画像は今回だけ使えます（容量が大きく記録できませんでした）", "err");
@@ -1819,7 +2021,7 @@
   // only goes in the filename when it survives that; a timestamp always does, and
   // keeps a run of labels from overwriting each other.
   function exportFilename(){
-    var name = (mode === "free" ? (state.title||"") : currentPreset().id).replace(/[\\/:*?"<>|\s]+/g,"-").slice(0,40);
+    var name = (mode === "free" ? (state.title||"") : (currentProduct()||{}).id || "").replace(/[\\/:*?"<>|\s]+/g,"-").slice(0,40);
     if(!/^[A-Za-z0-9._-]+$/.test(name)) name = "";
     var d = new Date();
     function pad(n){ return (n<10?"0":"")+n; }
@@ -1892,7 +2094,7 @@
   setActiveTemplate(0);
   renderSaved();
   for(var td=0; td<30; td++){ els.tallDots.appendChild(document.createElement("i")); }
-  priceEdits = readJson(PRICE_KEY);
+  loadProducts();
   headerImages = readJson(IMG_KEY);
   setMode("wide");
 })();
