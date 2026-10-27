@@ -491,19 +491,119 @@
   }
   .saved-del:hover{ background:var(--accent-soft); color:var(--accent-strong); }
 
+  .tabbar{
+    max-width:1360px; margin:0 auto 18px;
+    display:flex; gap:6px; flex-wrap:wrap;
+    border-bottom:1px solid var(--border); padding-bottom:0;
+  }
+  .tab{
+    appearance:none; cursor:pointer;
+    border:1px solid var(--border); border-bottom:none;
+    background:var(--surface-2); color:var(--text-muted);
+    border-radius:10px 10px 0 0; padding:10px 20px;
+    font-family:inherit; font-size:13.5px; font-weight:700;
+    position:relative; top:1px;
+  }
+  .tab:hover{ color:var(--text); }
+  .tab[aria-selected="true"]{
+    background:var(--surface); color:var(--accent-strong);
+    border-color:var(--border); box-shadow:0 -2px 0 var(--accent) inset;
+  }
+  .tab:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+
+  /* ---------- tall POP (header band + body) ---------- */
+  #labelTall{
+    container-type: inline-size;
+    width:100%;
+    background: var(--body-color, #e60012);
+    box-shadow: 0 2px 0 rgba(0,0,0,.04), 0 18px 30px -20px rgba(20,12,4,.45);
+  }
+  .tall-header{
+    width:100%; aspect-ratio: 100 / 17;
+    background: var(--header-color, #f2e8a0) var(--header-image, none) center/contain no-repeat;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .tall-header-hint{
+    font-family:'Zen Kaku Gothic New',sans-serif;
+    font-size:2.2cqw; color:rgba(0,0,0,.42); letter-spacing:.05em;
+  }
+  .tall-body{ padding: 2.4cqw; display:flex; flex-direction:column; gap:1.8cqw; }
+  .tall-inner{ background:#fff; padding: 2.6cqw 3cqw 3cqw; }
+  .tall-top{ display:flex; align-items:center; gap:2.4cqw; }
+  .tall-badge{
+    flex:none; width:13cqw; height:13cqw; border-radius:50%;
+    background: var(--badge-color,#da2419); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--font-badge); font-weight:900;
+    font-size:3cqw; line-height:1.15; text-align:center; white-space:pre-line;
+  }
+  .tall-title{
+    flex:1; min-width:0;
+    font-family: var(--font-title); font-weight:900;
+    font-size:8cqw; line-height:1.05; color:#1a1a1a; overflow-wrap:anywhere;
+  }
+  .tall-sub{
+    margin:1.4cqw 0 0;
+    font-family: var(--font-subtitle);
+    font-size:4cqw; line-height:1.2; color:#1a1a1a; text-align:center;
+  }
+  .tall-mid{ display:flex; align-items:center; gap:1.8cqw; margin-top:.6cqw; }
+  .tall-desc{
+    margin:0; flex:1; min-width:0;
+    font-family: var(--font-desc);
+    font-size:2.7cqw; line-height:1.5; color:#1a1a1a; white-space:pre-line;
+  }
+  .tall-allergy{
+    background:#fff; padding:1.4cqw 2cqw;
+    font-family: var(--font-allergy);
+    font-size:2.4cqw; line-height:1.4; color:#1a1a1a;
+  }
+  .tall-copy{
+    margin:0; text-align:center;
+    font-family:'Space Mono',monospace;
+    font-size:1.9cqw; color: var(--copy-color,#fff); letter-spacing:.02em;
+  }
+  #labelTall .price-block{ transform:none; }
+  #labelTall .price-main{ font-size:8.2cqw; color:#1a1a1a; }
+  #labelTall .tax-label{ font-size:1.5cqw; }
+  #labelTall .tax-num{ font-size:4.4cqw; }
+  #labelTall .tax-box{ border-width:.25cqw; border-radius:1.2cqw; padding:.8cqw 1.2cqw; }
+
+  .preset-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:9px; margin-bottom:4px; }
+  .preset-card{
+    appearance:none; cursor:pointer; text-align:left;
+    border:1px solid var(--border); background:var(--surface-2); color:var(--text);
+    border-radius:var(--radius-sm); padding:9px 11px 10px;
+    display:flex; flex-direction:column; gap:5px; font-family:inherit; transition:.15s;
+  }
+  .preset-card:hover{ border-color:var(--accent); transform:translateY(-1px); }
+  .preset-card:focus-visible{ outline:2px solid var(--focus); outline-offset:1px; }
+  .preset-card[aria-pressed="true"]{ border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; }
+  .preset-bar{ height:6px; border-radius:4px; }
+  .preset-card b{ font-size:12.5px; }
+  .preset-card span{ font-size:11px; color:var(--text-muted); font-family:'Space Mono',monospace; }
+  .header-upload{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .header-upload input[type="file"]{ font-family:inherit; font-size:12px; max-width:100%; }
+
   @media print{
     body{ background:#fff; padding:0; }
-    .app-header, .controls, .toolbar, .saved{ display:none !important; }
+    .app-header, .controls, .toolbar, .saved, .tabbar{ display:none !important; }
     .layout{ display:block; max-width:none; }
     .stage{ position:static; }
     .stage-card{ box-shadow:none; border:none; background:#fff; padding:0; }
-    #label{ box-shadow:none; }
+    #label, #labelTall{ box-shadow:none; }
   }
 </style>
 
 <div class="app-header">
   <h1>🏷️ POPラベル工房</h1>
-  <p>色・フォント・テキストを組み替えて、店頭POP値札をいくつでもデザインできます。テンプレートは全部あとから編集OK。</p>
+  <p>POPのサイズを選び、商品を選んで金額を直すだけ。新しいデザインを作るときは「自由編集」へ。</p>
+</div>
+
+<div class="tabbar" id="tabbar" role="tablist">
+  <button class="tab" type="button" role="tab" data-mode="wide" aria-selected="true">横長POP</button>
+  <button class="tab" type="button" role="tab" data-mode="tall" aria-selected="false">キティ型POP</button>
+  <button class="tab" type="button" role="tab" data-mode="free" aria-selected="false">自由編集</button>
 </div>
 
 <div class="layout">
@@ -539,6 +639,35 @@
           <p class="allergy" id="allergyOut">【アレルギー表示 29品目】 卵・乳成分・小麦</p>
         </div>
       </div>
+
+      <div id="labelTall" hidden>
+        <div class="tall-header" id="tallHeader">
+          <span class="tall-header-hint" id="tallHeaderHint">ヘッダー画像を読み込んでください</span>
+        </div>
+        <div class="tall-body">
+          <div class="tall-inner">
+            <div class="tall-top">
+              <div class="tall-badge"><span id="tallBadge">店舗限定</span></div>
+              <h2 class="tall-title" id="tallTitle">ハローキティ♥焼き</h2>
+            </div>
+            <p class="tall-sub" id="tallSub">〈シャキシャキりんご〉〈Apple Cream〉</p>
+            <div class="divider dotted" id="tallDots" aria-hidden="true"></div>
+            <div class="tall-mid">
+              <p class="tall-desc" id="tallDesc">青森産ふじりんご使用。
+シャキシャキ果肉たっぷり！</p>
+              <div class="price-block">
+                <div class="price-main"><span id="tallPrice">241</span><span class="yen">円</span></div>
+                <div class="tax-box">
+                  <span class="tax-label"><span class="en"><span>Tax</span><span>in</span></span><span class="jp">税込</span></span>
+                  <span class="tax-num"><span id="tallTaxPrice">260</span><span class="yen">円</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tall-allergy" id="tallAllergy">【アレルギー表示 29品目】 卵・小麦・乳成分・大豆・りんご</div>
+          <p class="tall-copy" id="tallCopy">© 2021 SANRIO CO., LTD. APPROVAL NO. L624181</p>
+        </div>
+      </div>
     </div>
 
     <div class="toolbar">
@@ -561,13 +690,41 @@
 
   <div class="controls">
 
-    <section class="panel">
+    <section class="panel" id="presetPanel">
+      <h2><span class="num">1</span>商品を選ぶ</h2>
+      <p class="hint" id="presetHint">クリックするとそのPOPに切り替わります。</p>
+      <div class="preset-grid" id="presetGrid"></div>
+
+      <h3 class="sub">金額の修正</h3>
+      <div class="field-grid">
+        <div class="field"><label for="presetPrice">価格（税抜・円）</label><input type="number" id="presetPrice" min="0" step="1"></div>
+        <div class="field"><label for="presetTaxRate">消費税率</label>
+          <select id="presetTaxRate">
+            <option value="8">8%（軽減税率）</option>
+            <option value="10">10%</option>
+          </select>
+        </div>
+        <div class="field"><label>税込価格（自動計算）</label><div class="readout" id="presetTaxOut">260円</div></div>
+      </div>
+      <p class="hint" style="margin:12px 0 0;">変更した金額はこのPCに記録され、次に開いたときも保たれます。</p>
+
+      <div id="headerUploadRow" hidden>
+        <h3 class="sub">ヘッダー画像（キャラクター部分）</h3>
+        <div class="header-upload">
+          <input type="file" id="headerFile" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+          <button type="button" class="btn-sm" id="headerClear">画像を外す</button>
+        </div>
+        <p class="hint" style="margin:8px 0 0;">お持ちのライセンス済みデータを読み込んでください。画像はこのPC内にのみ保存されます。</p>
+      </div>
+    </section>
+
+    <section class="panel editor-panel">
       <h2><span class="num">1</span>テンプレートから選ぶ</h2>
       <p class="hint">クリックで文字も色も一括反映。あとは自由に書き換えてOKです。</p>
       <div class="tpl-grid" id="tplGrid"></div>
     </section>
 
-    <section class="panel">
+    <section class="panel editor-panel">
       <h2><span class="num">2</span>カラー・白枠</h2>
       <p class="hint">配色プリセット、または5色を個別に指定できます。</p>
       <div class="chip-grid" id="paletteGrid" style="margin-bottom:14px;"></div>
@@ -587,7 +744,7 @@
       </div>
     </section>
 
-    <section class="panel">
+    <section class="panel editor-panel">
       <h2><span class="num">3</span>書式（テキストごとに指定）</h2>
       <p class="hint">フォント・文字サイズ・中央配置を、テキスト1つずつ設定できます。文字サイズは100%が標準です。</p>
       <div class="fmt-head">
@@ -597,7 +754,7 @@
       <p class="font-note" id="kanteiryuNote" hidden>ＤＦ勘亭流はこのPCにインストールされていないため、代わりに「筆文字（太）」で表示しています。勘亭流で印刷・書き出しをする場合は、ダイナフォントが入ったPCで開いてください。</p>
     </section>
 
-    <section class="panel">
+    <section class="panel editor-panel">
       <h2><span class="num">4</span>テキスト</h2>
       <div class="field-grid">
         <div class="field wide"><label for="iBadge">バッジ文言（Enterで2行目）</label>
@@ -622,7 +779,7 @@
       </div>
     </section>
 
-    <section class="panel">
+    <section class="panel editor-panel">
       <h2><span class="num">5</span>アレルギー表示</h2>
       <div class="field" style="margin-bottom:12px;">
         <label for="iAllergyPrefix">見出し文言</label>
@@ -748,6 +905,60 @@
     }
   ];
 
+  var ACCENT_RED = "#d81b2e";
+
+  // The shop's printed POPs, as fixed designs: pick one, correct the price.
+  var PRESETS_WIDE = [
+    {id:"ogura", name:"小倉あん", badge:"", ruby:"おぐら", title:"小倉あん", subtitle:"Ogura Red Bean",
+     desc:"厳選した北海道産小豆を使用。\n甘さ控えめに炊き上げた\nこだわりの粒あんです。",
+     price:195, taxRate:8, allergies:["卵","乳成分","小麦","大豆"],
+     colors:{frame:"#8e2239", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"shiro", name:"白あん", badge:"期間\n限定", ruby:"しろ", title:"白あん", subtitle:"White Bean",
+     desc:"北海道産の手亡豆を使用。\n上品で奥深い甘みのあんこです。",
+     price:195, taxRate:8, allergies:["卵","乳成分","小麦","大豆"],
+     colors:{frame:"#efe4b0", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"cream", name:"プレミアムクリーム", badge:"", ruby:"", title:"プレミアムクリーム", subtitle:"Premium Cream",
+     desc:"北海道ミルク使用。\n生地に合わせて独自開発した\nオリジナルカスタードクリーム！",
+     price:204, taxRate:8, allergies:["卵","乳成分","小麦","大豆"],
+     colors:{frame:"#e9b81f", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"murasaki", name:"紫いもあん", badge:"期間\n限定", ruby:"むらさき", title:"紫いもあん", subtitle:"Purple Sweet Potato",
+     desc:"紫いもの風味を生かした、\n素朴で飽きのこないおいしさ！",
+     price:213, taxRate:8, allergies:["卵","乳成分","小麦","大豆"],
+     colors:{frame:"#7a2e7e", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"kuriko", name:"くりこあん", badge:"", ruby:"", title:"くりこあん", subtitle:"Chestnut & Ogura Red Bean",
+     desc:"当店看板商品！厳選した\n小豆を使用したこしあんに、\n栗の甘露煮をたっぷり入れました。",
+     price:241, taxRate:8, allergies:["卵","乳成分","小麦","大豆"],
+     colors:{frame:"#5e2340", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"beniharuka", name:"紅はるかあん", badge:"期間\n限定", ruby:"べに", title:"紅はるかあん", subtitle:"Beniharuka Sweet Potato",
+     desc:"さつま芋の中でも糖度の高い\n「紅はるか」をあんこにしました。\nなめらかで濃厚な甘さ！",
+     price:213, taxRate:8, allergies:["卵","乳成分","小麦","大豆"],
+     colors:{frame:"#f0c419", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}}
+  ];
+
+  var KITTY_COPY = "© 2021 SANRIO CO., LTD. APPROVAL NO. L624181";
+  var PRESETS_TALL = [
+    {id:"apple", name:"シャキシャキりんご", badge:"店舗\n限定", title:"ハローキティ♥焼き",
+     sub:"〈シャキシャキりんご〉〈Apple Cream〉",
+     desc:"青森産ふじりんご使用。\nシャキシャキ果肉たっぷり！",
+     price:241, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆・りんご",
+     copy:KITTY_COPY, header:"#f2e8a0", body:"#e60012", badge_color:ACCENT_RED},
+    {id:"choco", name:"ミルクチョコレート", badge:"店舗\n限定", title:"ハローキティ♥焼き",
+     sub:"〈ミルクチョコレート〉〈Milk Chocolate〉",
+     desc:"コクのあるチョコレート。\nとろ〜りなめらか！",
+     price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     copy:KITTY_COPY, header:"#f6c2d9", body:"#5c3a21", badge_color:ACCENT_RED},
+    {id:"ogura", name:"小倉あん", badge:"店舗\n限定", title:"ハローキティ♥焼き",
+     sub:"〈小倉あん〉〈Ogura Red Bean〉",
+     desc:"北海道小豆使用。風味豊かに炊き\n上げたこだわりの粒あんです。",
+     price:204, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     copy:KITTY_COPY, header:"#f6c2d9", body:"#6b2c4a", badge_color:ACCENT_RED},
+    {id:"custard", name:"ふわふわカスタード", badge:"店舗\n限定", title:"ハローキティ♥焼き",
+     sub:"〈ふわふわカスタード〉〈Cream〉",
+     desc:"北海道牛乳使用。ふんわりした\n口どけのカスタードクリーム。",
+     price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     copy:KITTY_COPY, header:"#f6c2d9", body:"#f2b457", badge_color:ACCENT_RED}
+  ];
+
   var DEFAULT_INNER_PAD = 0.8;
 
   // Fine positioning, folded into the 書式 row it belongs to. `factor` converts
@@ -780,7 +991,11 @@
    "iAllergyPrefix","allergyMandatory","allergyRecommended","allergyPreviewText",
    "allergyAddRow","allergyAddInput","allergyAddCommit",
    "exportBtn","printBtn","randomBtn","saveBtn","statusOut","kanteiryuNote",
-   "savedSection","savedList","savedEmpty","savedCount","savedClear","dottedDivider"
+   "savedSection","savedList","savedEmpty","savedCount","savedClear","dottedDivider",
+   "tabbar","labelTall","tallHeader","tallHeaderHint","tallBadge","tallTitle","tallSub",
+   "tallDots","tallDesc","tallPrice","tallTaxPrice","tallAllergy","tallCopy",
+   "presetPanel","presetGrid","presetHint","presetPrice","presetTaxRate","presetTaxOut",
+   "headerUploadRow","headerFile","headerClear"
   ].forEach(function(id){ els[id] = document.getElementById(id); });
 
   function defaultSizes(){
@@ -1181,6 +1396,7 @@
     });
 
     els.badgeText.textContent = state.badge;
+    els.badgeWrap.hidden = !state.badge.trim();   // presets without a badge (小倉あん など)
     els.rubyOut.textContent = state.ruby;
     els.rubyOut.hidden = !state.ruby;
     els.titleOut.textContent = state.title;
@@ -1239,6 +1455,18 @@
     els.exportBtn.addEventListener("click", exportPng);
     els.saveBtn.addEventListener("click", function(){ saveCurrent(false); });
     els.savedClear.addEventListener("click", onClearClick);
+
+    Array.prototype.forEach.call(els.tabbar.children, function(b){
+      b.addEventListener("click", function(){ setMode(b.dataset.mode); });
+    });
+    els.presetPrice.addEventListener("input", savePriceEdit);
+    els.presetTaxRate.addEventListener("change", savePriceEdit);
+    els.headerFile.addEventListener("change", function(){ loadHeaderImage(this.files && this.files[0]); this.value = ""; });
+    els.headerClear.addEventListener("click", function(){
+      delete headerImages[currentPreset().id];
+      writeJson(IMG_KEY, headerImages);
+      applyPreset();
+    });
   }
 
   function randomize(){
@@ -1424,6 +1652,163 @@
     clearArmed = setTimeout(disarmClear, 4000);
   }
 
+  // ---- tabs: two fixed POP sizes (price-only) plus the free editor ----
+  var PRICE_KEY = "kuriko-pop-prices";
+  var IMG_KEY = "kuriko-pop-headers";
+  var mode = "wide";
+  var chosen = {wide:0, tall:0};
+  var priceEdits = {};     // "wide:ogura" -> {price, taxRate}
+  var headerImages = {};   // tall preset id -> data URL
+
+  function readJson(key){
+    try{ var raw = localStorage.getItem(key); return raw ? (JSON.parse(raw) || {}) : {}; }
+    catch(e){ return {}; }
+  }
+  function writeJson(key, obj){
+    try{ localStorage.setItem(key, JSON.stringify(obj)); return true; }
+    catch(e){ return false; }
+  }
+
+  function presetsFor(m){ return m === "tall" ? PRESETS_TALL : PRESETS_WIDE; }
+  function currentPreset(){ return presetsFor(mode)[chosen[mode]] || presetsFor(mode)[0]; }
+  function priceOf(m, preset){
+    var edit = priceEdits[m + ":" + preset.id];
+    return {
+      price: edit && typeof edit.price === "number" ? edit.price : preset.price,
+      taxRate: edit && typeof edit.taxRate === "number" ? edit.taxRate : preset.taxRate
+    };
+  }
+  function taxIncluded(price, rate){ return Math.floor(price * (1 + rate/100)); }
+
+  function setMode(next){
+    mode = next;
+    Array.prototype.forEach.call(els.tabbar.children, function(b){
+      b.setAttribute("aria-selected", String(b.dataset.mode === mode));
+    });
+    var preset = mode === "free";
+    els.presetPanel.hidden = preset;
+    Array.prototype.forEach.call(document.querySelectorAll(".editor-panel"), function(p){ p.hidden = !preset; });
+    els.savedSection.hidden = !preset;
+    els.saveBtn.hidden = !preset;
+    els.randomBtn.hidden = !preset;
+    els.label.hidden = (mode === "tall");
+    els.labelTall.hidden = (mode !== "tall");
+    els.headerUploadRow.hidden = (mode !== "tall");
+    if(mode === "free"){ render(); }
+    else { buildPresetGrid(); applyPreset(); }
+  }
+
+  function buildPresetGrid(){
+    var list = presetsFor(mode);
+    els.presetHint.textContent = mode === "tall"
+      ? "キティ型POPの商品です。選んでから金額を直してください。"
+      : "横長POPの商品です。選んでから金額を直してください。";
+    els.presetGrid.innerHTML = "";
+    list.forEach(function(p, i){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "preset-card";
+      b.setAttribute("aria-pressed", String(i === chosen[mode]));
+      var bar = document.createElement("span");
+      bar.className = "preset-bar";
+      var c1 = mode === "tall" ? p.header : p.colors.frame;
+      var c2 = mode === "tall" ? p.body : p.colors.accent;
+      bar.style.background = "linear-gradient(90deg,"+c1+" 50%,"+c2+" 50%)";
+      var nm = document.createElement("b");
+      nm.textContent = p.name;
+      var pr = document.createElement("span");
+      var money = priceOf(mode, p);
+      pr.textContent = money.price + "円 / 税込" + taxIncluded(money.price, money.taxRate) + "円";
+      b.appendChild(bar); b.appendChild(nm); b.appendChild(pr);
+      b.addEventListener("click", function(){
+        chosen[mode] = i;
+        buildPresetGrid();
+        applyPreset();
+      });
+      els.presetGrid.appendChild(b);
+    });
+  }
+
+  function applyPreset(){
+    var p = currentPreset();
+    var money = priceOf(mode, p);
+    els.presetPrice.value = money.price;
+    els.presetTaxRate.value = String(money.taxRate);
+    els.presetTaxOut.textContent = taxIncluded(money.price, money.taxRate) + "円";
+
+    if(mode === "tall"){ renderTall(p, money); return; }
+
+    // the wide POP reuses the editor's own layout and the stored 書式
+    var prefs = readPrefs();
+    state = cloneTemplate(TEMPLATES[0], prefs || state);
+    if(prefs && prefs.fonts){
+      TEXT_ELEMENTS.forEach(function(e){ if(prefs.fonts[e.key]) state.fonts[e.key] = prefs.fonts[e.key]; });
+    }
+    state.badge = p.badge; state.ruby = p.ruby; state.title = p.title;
+    state.subtitle = p.subtitle; state.desc = p.desc;
+    state.price = money.price; state.taxRate = money.taxRate;
+    state.allergies = p.allergies.slice();
+    state.colors = {frame:p.colors.frame, bg:p.colors.bg, badge:p.colors.badge,
+                    accent:p.colors.accent, text:p.colors.text};
+    render();
+  }
+
+  function renderTall(p, money){
+    var t = els.labelTall;
+    t.style.setProperty("--header-color", p.header);
+    t.style.setProperty("--body-color", p.body);
+    t.style.setProperty("--badge-color", p.badge_color);
+    t.style.setProperty("--accent-color", ACCENT_RED);
+    t.style.setProperty("--frame-color", p.body);
+    t.style.setProperty("--copy-color", getContrastText(p.body));
+    t.style.setProperty("--text-color", "#1a1a1a");
+    t.style.setProperty("--tax-word-gap", isMonoFont(state.fonts.price) ? ".1em" : ".26em");
+    TEXT_ELEMENTS.forEach(function(e){
+      t.style.setProperty("--font-"+e.key, fontFamily(state.fonts[e.key]));
+    });
+    t.style.setProperty("--font-yen", fontFamily(isJpFont(state.fonts.price) ? state.fonts.price : state.fonts.desc));
+
+    var img = headerImages[p.id];
+    t.style.setProperty("--header-image", img ? 'url("'+img+'")' : "none");
+    els.tallHeaderHint.hidden = !!img;
+
+    els.tallBadge.textContent = p.badge;
+    els.tallTitle.textContent = p.title;
+    els.tallSub.textContent = p.sub;
+    els.tallDesc.textContent = p.desc;
+    els.tallPrice.textContent = money.price;
+    els.tallTaxPrice.textContent = taxIncluded(money.price, money.taxRate);
+    els.tallAllergy.textContent = p.allergyText;
+    els.tallCopy.textContent = p.copy;
+  }
+
+  function savePriceEdit(){
+    var p = currentPreset();
+    var v = parseFloat(els.presetPrice.value);
+    if(!isFinite(v) || v < 0) return;
+    priceEdits[mode + ":" + p.id] = {price: Math.round(v), taxRate: Number(els.presetTaxRate.value)};
+    writeJson(PRICE_KEY, priceEdits);
+    buildPresetGrid();
+    applyPreset();
+  }
+
+  function loadHeaderImage(file){
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      var p = currentPreset();
+      headerImages[p.id] = reader.result;
+      if(!writeJson(IMG_KEY, headerImages)){
+        setStatus("画像は今回だけ使えます（容量が大きく記録できませんでした）", "err");
+      }else{
+        setStatus("ヘッダー画像を読み込みました", "ok");
+      }
+      applyPreset();
+    };
+    reader.onerror = function(){ setStatus("画像を読み込めませんでした", "err"); };
+    reader.readAsDataURL(file);
+  }
+
   function setStatus(msg, tone){
     els.statusOut.textContent = msg;
     els.statusOut.setAttribute("data-tone", tone||"");
@@ -1434,7 +1819,7 @@
   // only goes in the filename when it survives that; a timestamp always does, and
   // keeps a run of labels from overwriting each other.
   function exportFilename(){
-    var name = (state.title||"").replace(/[\\/:*?"<>|\s]+/g,"-").slice(0,40);
+    var name = (mode === "free" ? (state.title||"") : currentPreset().id).replace(/[\\/:*?"<>|\s]+/g,"-").slice(0,40);
     if(!/^[A-Za-z0-9._-]+$/.test(name)) name = "";
     var d = new Date();
     function pad(n){ return (n<10?"0":"")+n; }
@@ -1479,11 +1864,11 @@
     }
     els.exportBtn.disabled = true;
     setStatus("画像を生成しています…");
-    html2canvas(els.label, {scale:3, backgroundColor:null, useCORS:true}).then(function(canvas){
+    html2canvas(mode === "tall" ? els.labelTall : els.label, {scale:3, backgroundColor:null, useCORS:true}).then(function(canvas){
       canvas.toBlob(function(blob){
         if(!blob){ setStatus("画像の生成に失敗しました","err"); els.exportBtn.disabled=false; return; }
         saveBlob(blob, exportFilename()).then(function(res){
-          saveCurrent(true);   // a label worth exporting is worth keeping in the list
+          if(mode === "free") saveCurrent(true);   // a label worth exporting is worth keeping
           setStatus(res.status==="saved" ? "画像を保存しました" : "保存処理が完了しました", "ok");
           els.exportBtn.disabled = false;
         }).catch(function(err){
@@ -1506,5 +1891,9 @@
   applyTemplate(0, readPrefs());
   setActiveTemplate(0);
   renderSaved();
+  for(var td=0; td<30; td++){ els.tallDots.appendChild(document.createElement("i")); }
+  priceEdits = readJson(PRICE_KEY);
+  headerImages = readJson(IMG_KEY);
+  setMode("wide");
 })();
 </script>
