@@ -542,6 +542,11 @@
     font-family: var(--font-title); font-weight:900;
     font-size:8cqw; line-height:1.05; color:#1a1a1a; overflow-wrap:anywhere;
   }
+  .tall-ruby{
+    margin:1.1cqw 0 0;
+    font-family: var(--font-ruby);
+    font-size:2.2cqw; line-height:1.2; color:#1a1a1a; text-align:center; letter-spacing:.08em;
+  }
   .tall-sub{
     margin:1.4cqw 0 0;
     font-family: var(--font-subtitle);
@@ -666,6 +671,7 @@
               <div class="tall-badge"><span id="tallBadge">店舗限定</span></div>
               <h2 class="tall-title" id="tallTitle">ハローキティ♥焼き</h2>
             </div>
+            <p class="tall-ruby" id="tallRuby" hidden>せいぶでんしゃやき</p>
             <p class="tall-sub" id="tallSub">〈シャキシャキりんご〉〈Apple Cream〉</p>
             <div class="divider dotted" id="tallDots" aria-hidden="true"></div>
             <div class="tall-mid">
@@ -957,7 +963,99 @@
     {id:"beniharuka", name:"紅はるかあん", badge:"期間\n限定", ruby:"べに", title:"紅はるかあん", subtitle:"Beniharuka Sweet Potato",
      desc:"さつま芋の中でも糖度の高い\n「紅はるか」をあんこにしました。\nなめらかで濃厚な甘さ！",
      price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
-     colors:{frame:"#f0c419", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}}
+     colors:{frame:"#f0c419", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"shiratama-yomogi", name:"白玉よもぎあん", badge:"季節\n限定", ruby:"しらたま", title:"白玉よもぎあん", subtitle:"Mugwort & Shiratama",
+     desc:"春よもぎをたっぷり練り込み\n香り豊かに仕上げました。\nもちもちの白玉入り。",
+     price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#4e7a2a", bg:"#ffffff", badge:"#6aa43a", accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"yomogi", name:"よもぎあん", badge:"季節\n限定", ruby:"", title:"よもぎあん", subtitle:"Mugwort",
+     desc:"春よもぎをたっぷり練り込み\n香り豊かに仕上げました。\n程良い苦味が特徴です。",
+     price:204, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#4e7a2a", bg:"#ffffff", badge:"#6aa43a", accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"shiratama-goma", name:"白玉ごまあん", badge:"期間\n限定", ruby:"しらたま", title:"白玉ごまあん", subtitle:"Shiratama & Sesame",
+     desc:"香ばしく濃厚なごまあんに\nもちもちの白玉を入れました。",
+     price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆・ごま",
+     colors:{frame:"#3b2a1d", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"goma", name:"ごまあん", badge:"期間\n限定", ruby:"", title:"ごまあん", subtitle:"Sesame",
+     desc:"風味豊かなごまがたっぷり入った\n濃厚で香ばしいあんこです。\nみたらし風の味わい！",
+     price:204, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆・ごま",
+     colors:{frame:"#3b2a1d", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"butter-ogura", name:"北海道バター小倉", badge:"期間\n限定", ruby:"ほっかいどう", title:"北海道バター小倉", subtitle:"Ogura Red Bean & Butter",
+     desc:"北海道バター使用。バターの\nコクが小倉あんの甘さと良く合う\nくりこ庵オリジナル餡です。",
+     price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#5e2340", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"shiro-kuriko", name:"白くりこあん", badge:"期間\n限定", ruby:"", title:"白くりこあん〈白あん〉", subtitle:"Chestnut & White Bean",
+     desc:"白あんに栗が入ったあんこです。\n栗の旨味と甘みが広がります。",
+     price:241, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#efe4b0", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"onemore-milk", name:"ワンモアミルククリーム", badge:"期間\n限定", ruby:"", title:"ワンモアミルククリーム", subtitle:"Milk Cream",
+     desc:"上質な低温殺菌ミルクを使用。\nまろやかで深いコクを生かした\n甘さ控えめのミルククリームです！",
+     price:204, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#a9d8e8", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"camembert", name:"カマンベールチーズ", badge:"期間\n限定", ruby:"", title:"カマンベールチーズ", subtitle:"Camembert Cheese",
+     desc:"フランス産カマンベールパウダー\nを使用！程良く塩味のきいた\nコクのあるチーズクリームです。",
+     price:232, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#f2c94c", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"tochiotome", name:"とちおとめ苺ミルククリーム", badge:"期間\n限定", ruby:"いちご", title:"とちおとめ苺ミルククリーム", subtitle:"Strawberry Milk Cream",
+     desc:"とちおとめの果肉入り！\nミルクで仕上げた、甘酸っぱく\nフルーティーなクリームです。",
+     price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#f4b8c8", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"tonyu", name:"豆乳クリーム", badge:"期間\n限定", ruby:"とうにゅう", title:"豆乳クリーム", subtitle:"Soybean Milk Cream",
+     desc:"大人気商品！国産豆乳の\nコクを生かした、なめらかで\n甘さ控えめのクリームです。",
+     price:223, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#f6e7a1", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"chocolate", name:"チョコレート", badge:"期間\n限定", ruby:"", title:"チョコレート", subtitle:"Chocolate Cream",
+     desc:"濃厚なカカオとミルクで\nまろやかに仕上げました！",
+     price:204, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#3b2a1d", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"maple", name:"メープル＆クリーム", badge:"期間\n限定", ruby:"", title:"メープル＆クリーム", subtitle:"Maple & Cream",
+     desc:"カスタードの中にメープルシロップ\nを入れました！華やかな香りと\n濃厚な甘さが広がります！",
+     price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#c9a227", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"pumpkin", name:"パンプキンクリーム", badge:"期間\n限定", ruby:"", title:"パンプキンクリーム", subtitle:"Pumpkin Cream",
+     desc:"北海道産かぼちゃ使用。\n素材がゴロっと入った、食感も\n楽しい風味豊かなクリームです。",
+     price:223, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#ef8a1b", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"matcha", name:"西尾の抹茶クリーム", badge:"期間\n限定", ruby:"まっちゃ", title:"西尾の抹茶クリーム", subtitle:"Matcha Cream",
+     desc:"香り高い「西尾の抹茶」を使用。\n口どけ良く甘めに仕上げました。",
+     price:223, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#4e8a2a", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"apple", name:"シャキシャキりんごクリーム", badge:"期間\n限定", ruby:"", title:"シャキシャキりんごクリーム", subtitle:"Apple Cream",
+     desc:"青森県産ふじりんご使用。\n角切り果肉入りでジューシー！\n食感も楽しい甘酸っぱいクリーム。",
+     price:241, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆・りんご",
+     colors:{frame:"#f7f0a8", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"milktea", name:"ミルクティクリーム", badge:"期間\n限定", ruby:"", title:"ミルクティクリーム", subtitle:"Milk Tea Cream",
+     desc:"セイロン茶の最高級品、\nウバ茶の茶葉が入った、\n香り豊かなクリームです！",
+     price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#a67c3d", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"hojicha", name:"ほうじ茶ミルククリーム", badge:"期間\n限定", ruby:"", title:"ほうじ茶ミルククリーム", subtitle:"Hojicha & Milk Cream",
+     desc:"加賀棒茶を使用。香ばしい香りと\nミルククリームが良く合います！",
+     price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#8b6239", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"rarecheese", name:"レアチーズクリーム", badge:"期間\n限定", ruby:"", title:"レアチーズクリーム", subtitle:"Cheese Cream",
+     desc:"甘さ・酸味・コクをバランス良く\n仕上げた甘めのレアチーズクリーム。\nなめらかでクリーミーな味わい！",
+     price:223, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#f6e7a1", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"melon", name:"富良野メロンクリーム", badge:"期間\n限定", ruby:"ふらの", title:"富良野メロンクリーム", subtitle:"Melon Cream",
+     desc:"北海道富良野産の赤肉メロン使用。\n濃厚な甘みを生かし、ミルクで\nまろやかに仕上げました！",
+     price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#ef8a1b", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"strawberry-cheese", name:"ストロベリーチーズクリーム", badge:"期間\n限定", ruby:"", title:"ストロベリーチーズクリーム", subtitle:"Strawberry Cheese Cream",
+     desc:"チーズクリームに果肉たっぷりの\nいちごピューレを入れました！\n甘酸っぱくてフルーティー♪",
+     price:232, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#ee7faa", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"caramel", name:"生キャラメルクリーム", badge:"期間\n限定", ruby:"", title:"生キャラメルクリーム", subtitle:"Caramel Cream",
+     desc:"北海道産純生クリーム使用。\n香ばしくとろける生キャラメルの\nクリームです！",
+     price:241, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#b5651d", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"pistachio", name:"ピスタチオクリーム", badge:"期間\n限定", ruby:"", title:"ピスタチオクリーム", subtitle:"Pistachio Cream",
+     desc:"ナッツの王様ピスタチオ。\n香ばしいコクと旨みをそのまま\nクリームにしました！",
+     price:223, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆・ピスタチオ",
+     colors:{frame:"#c8d89a", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
+    {id:"blueberry-cheese", name:"ブルーベリーチーズクリーム", badge:"期間\n限定", ruby:"", title:"ブルーベリーチーズクリーム", subtitle:"Blueberry Cheese Cream",
+     desc:"チーズクリームにブルーベリー\nピューレを入れました。\nゴロっと果肉入りでジューシー！",
+     price:241, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     colors:{frame:"#8e4a9e", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}}
   ];
 
   var KITTY_COPY = "© 2021 SANRIO CO., LTD. APPROVAL NO. L624181";
@@ -981,7 +1079,62 @@
      sub:"〈ふわふわカスタード〉〈Cream〉",
      desc:"北海道牛乳使用。ふんわりした\n口どけのカスタードクリーム。",
      price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
-     copy:KITTY_COPY, header:"#f6c2d9", body:"#f2b457", badge_color:ACCENT_RED}
+     copy:KITTY_COPY, header:"#f6c2d9", body:"#f2b457", badge_color:ACCENT_RED},
+    {id:"seibu-custard", name:"西武・ふわふわカスタード", badge:"店舗\n限定", title:"西武電車焼き", ruby:"せいぶでんしゃやき",
+     sub:"〈ふわふわカスタード〉〈Cream〉",
+     desc:"北海道牛乳使用。ふんわりした\n口どけのカスタードクリーム。",
+     price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     copy:"西武鉄道株式会社商品化許諾済", header:"#f7e07a", body:"#e8a33d", badge_color:"#1b5aa8"},
+    {id:"seibu-choco", name:"西武・ミルクチョコレート", badge:"店舗\n限定", title:"西武電車焼き", ruby:"せいぶでんしゃやき",
+     sub:"〈ミルクチョコレート〉〈Milk chocolate〉",
+     desc:"コクのあるチョコレート。\nとろ〜りなめらか！",
+     price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     copy:"西武鉄道株式会社商品化許諾済", header:"#f7e07a", body:"#6b4423", badge_color:"#1b5aa8"},
+    {id:"seibu-ogura", name:"西武・小倉あん", badge:"店舗\n限定", title:"西武電車焼き", ruby:"せいぶでんしゃやき",
+     sub:"〈小倉あん〉〈Ogura Red Bean〉",
+     desc:"北海道小豆使用。\nこだわりの粒あんです。",
+     price:204, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     copy:"西武鉄道株式会社商品化許諾済", header:"#f7e07a", body:"#7b2949", badge_color:"#1b5aa8"},
+    {id:"seibu-strawberry", name:"西武・苺ミルククリーム", badge:"店舗\n限定", title:"西武電車焼き", ruby:"せいぶでんしゃやき",
+     sub:"〈苺ミルククリーム〉〈Strawberry Milk Cream〉",
+     desc:"とちおとめ苺使用。ミルクが\n入った甘酸っぱいクリーム♪",
+     price:232, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     copy:"西武鉄道株式会社商品化許諾済", header:"#f7e07a", body:"#f4a8c0", badge_color:"#1b5aa8"},
+    {id:"keikyun-azuki", name:"けいきゅん・あずきバター", badge:"店舗\n限定", title:"けいきゅん焼き", ruby:"",
+     sub:"〈あずきバター〉〈Ogura Red Bean & butter〉",
+     desc:"ふんわり香るバターの香り。\n小倉あんの甘さと相性抜群！",
+     price:204, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳・大豆",
+     copy:"", header:"#f0e8d0", body:"#6b2240", badge_color:ACCENT_RED},
+    {id:"keikyun-ogura", name:"けいきゅん・小倉あん", badge:"店舗\n限定", title:"けいきゅん焼き", ruby:"",
+     sub:"〈小倉あん〉〈Ogura Red Bean〉",
+     desc:"北海道小豆使用。風味豊かに炊き\n上げたこだわりの粒あんです。",
+     price:186, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳・大豆",
+     copy:"", header:"#f0e8d0", body:"#a81f63", badge_color:ACCENT_RED},
+    {id:"keikyun-milk", name:"けいきゅん・ミルククリーム", badge:"店舗\n限定", title:"けいきゅん焼き", ruby:"",
+     sub:"〈ミルククリーム〉〈Milk Cream〉",
+     desc:"北海道牛乳のコクとおいしさを\n生かしたなめらかなクリーム！",
+     price:204, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳・大豆",
+     copy:"", header:"#f0e8d0", body:"#aed9ee", badge_color:ACCENT_RED},
+    {id:"kuromi-custard", name:"クロミ・ふわふわカスタード", badge:"店舗\n限定", title:"クロミ焼き", ruby:"",
+     sub:"〈ふわふわカスタード〉〈Cream〉",
+     desc:"北海道牛乳使用。ふんわりした\n口どけのカスタードクリーム。",
+     price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     copy:"© '25 SANRIO CO., LTD. APPR. NO. L663543", header:"#7b6bb0", body:"#f2c94c", badge_color:ACCENT_RED},
+    {id:"kuromi-choco", name:"クロミ・ミルクチョコレート", badge:"店舗\n限定", title:"クロミ焼き", ruby:"",
+     sub:"〈ミルクチョコレート〉〈Milk Chocolate〉",
+     desc:"コクのあるチョコレート。\nとろ〜りなめらか！",
+     price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     copy:"© '25 SANRIO CO., LTD. APPR. NO. L663543", header:"#7b6bb0", body:"#5c3a21", badge_color:ACCENT_RED},
+    {id:"kuromi-milk", name:"クロミ・ミルククリーム", badge:"店舗\n限定", title:"クロミ焼き", ruby:"",
+     sub:"〈ミルククリーム〉〈Milk Cream〉",
+     desc:"北海道牛乳のコクとおいしさを\n生かしたなめらかなクリーム！",
+     price:232, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     copy:"© '25 SANRIO CO., LTD. APPR. NO. L663543", header:"#7b6bb0", body:"#aed9ee", badge_color:ACCENT_RED},
+    {id:"kuromi-strawberry", name:"クロミ・苺ミルククリーム", badge:"店舗\n限定", title:"クロミ焼き", ruby:"",
+     sub:"〈苺ミルククリーム〉〈Strawberry Milk Cream〉",
+     desc:"とちおとめ苺使用。ミルクが\n入った甘酸っぱいクリーム♪",
+     price:232, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
+     copy:"© '25 SANRIO CO., LTD. APPR. NO. L663543", header:"#7b6bb0", body:"#f4a8c0", badge_color:ACCENT_RED}
   ];
 
   var DEFAULT_INNER_PAD = 0.8;
@@ -1017,7 +1170,7 @@
    "allergyAddRow","allergyAddInput","allergyAddCommit",
    "exportBtn","printBtn","randomBtn","saveBtn","statusOut","kanteiryuNote",
    "savedSection","savedList","savedEmpty","savedCount","savedClear","dottedDivider",
-   "tabbar","labelTall","tallHeader","tallHeaderHint","tallBadge","tallTitle","tallSub",
+   "tabbar","labelTall","tallHeader","tallHeaderHint","tallBadge","tallTitle","tallRuby","tallSub",
    "tallDots","tallDesc","tallPrice","tallTaxPrice","tallAllergy","tallCopy",
    "presetPanel","presetGrid","presetHint","presetPrice","presetTaxRate","presetTaxOut",
    "headerUploadRow","headerFile","headerClear",
@@ -1713,6 +1866,7 @@
     {key:"name",        label:"一覧での表示名", type:"text"},
     {key:"badge",       label:"バッジ文言（空欄でバッジなし）", type:"textarea", rows:2},
     {key:"title",       label:"商品名", type:"text"},
+    {key:"ruby",        label:"ふりがな", type:"text"},
     {key:"sub",         label:"サブタイトル", type:"text", wide:true},
     {key:"desc",        label:"説明文（改行OK）", type:"textarea", rows:3, wide:true},
     {key:"allergyText", label:"アレルギー表示", type:"text", wide:true},
@@ -1726,7 +1880,7 @@
 
   function blankProduct(m){
     if(m === "tall"){
-      return {id:newId(), name:"新しい商品", badge:"店舗\n限定", title:"", sub:"", desc:"",
+      return {id:newId(), name:"新しい商品", badge:"店舗\n限定", title:"", ruby:"", sub:"", desc:"",
               price:200, taxRate:8, allergyText:ALLERGY_PREFIX+" 卵・小麦・乳成分・大豆",
               copy:"", header:"#f6c2d9", body:"#e60012", badge_color:ACCENT_RED};
     }
@@ -1744,15 +1898,36 @@
     try{ localStorage.setItem(key, JSON.stringify(obj)); return true; }
     catch(e){ return false; }
   }
+  var seededIds = [];
   function loadProducts(){
     var stored = readJson(PRODUCTS_KEY);
     products = {
-      wide: Array.isArray(stored.wide) && stored.wide.length ? stored.wide : JSON.parse(JSON.stringify(PRESETS_WIDE)),
-      tall: Array.isArray(stored.tall) && stored.tall.length ? stored.tall : JSON.parse(JSON.stringify(PRESETS_TALL))
+      wide: Array.isArray(stored.wide) ? stored.wide : [],
+      tall: Array.isArray(stored.tall) ? stored.tall : []
     };
+    // Each built-in product is handed over once. One deleted here stays deleted,
+    // and products added to the tool later still reach a list that already exists
+    // (an older list counts whatever it holds as already handed over).
+    // keyed by tab, since the same id can legitimately exist in both lists
+    var seeded = Array.isArray(stored.seededIds)
+      ? stored.seededIds
+      : products.wide.map(function(p){ return "wide:" + p.id; })
+          .concat(products.tall.map(function(p){ return "tall:" + p.id; }));
+    var added = 0;
+    [["wide", PRESETS_WIDE], ["tall", PRESETS_TALL]].forEach(function(pair){
+      pair[1].forEach(function(src){
+        var key = pair[0] + ":" + src.id;
+        if(seeded.indexOf(key) >= 0) return;
+        seeded.push(key);
+        products[pair[0]].push(JSON.parse(JSON.stringify(src)));
+        added++;
+      });
+    });
+    seededIds = seeded;
+    if(added) saveProducts();
   }
   function saveProducts(){
-    if(!writeJson(PRODUCTS_KEY, products)){
+    if(!writeJson(PRODUCTS_KEY, {wide:products.wide, tall:products.tall, seededIds:seededIds})){
       setStatus("このブラウザでは商品を記録できません（プライベートウィンドウなど）", "err");
     }
   }
@@ -1974,6 +2149,8 @@
     els.tallBadge.textContent = p.badge || "";
     els.tallBadge.parentNode.hidden = !(p.badge || "").trim();
     els.tallTitle.textContent = p.title || "";
+    els.tallRuby.textContent = p.ruby || "";
+    els.tallRuby.hidden = !(p.ruby || "").trim();
     els.tallSub.textContent = p.sub || "";
     els.tallDesc.textContent = p.desc || "";
     els.tallPrice.textContent = p.price;
