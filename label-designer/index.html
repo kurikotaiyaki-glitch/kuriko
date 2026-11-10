@@ -183,15 +183,9 @@
   }
 
   .divider{ flex:none; height:1.4cqw; margin:1.3cqw 0 1cqw; }
-  /* Real dashes rather than a repeating radial-gradient: html2canvas paints a
-     gradient once instead of tiling it, which dropped the line from exports. */
+  /* A solid bar, not a repeating gradient: html2canvas paints a gradient once
+     instead of tiling it, which dropped the rule from exports entirely. */
   .divider.dotted{
-    height:1.1cqw;
-    display:flex; align-items:center; justify-content:space-between;
-    overflow:hidden;
-  }
-  .divider.dotted i{
-    flex:0 1 2cqw;        /* wide dashes, so only a hairline of gap is left */
     height:1.1cqw;
     border-radius:.55cqw;
     background: var(--frame-color,#f6de9e);
@@ -2309,7 +2303,6 @@
   }
 
   // init
-  for(var dot=0; dot<44; dot++){ els.dottedDivider.appendChild(document.createElement("i")); }
   buildTemplateCards();
   buildPaletteChips();
   buildFormatRows();
@@ -2317,7 +2310,6 @@
   applyTemplate(0, readPrefs());
   setActiveTemplate(0);
   renderSaved();
-  for(var td=0; td<44; td++){ els.tallDots.appendChild(document.createElement("i")); }
   loadProducts();
   headerImages = readJson(IMG_KEY);
   setMode("wide");
