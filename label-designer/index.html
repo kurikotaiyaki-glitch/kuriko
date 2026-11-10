@@ -110,7 +110,7 @@
     background: var(--frame-color, #f6de9e);
     /* percent, not cqw: an element cannot query itself, so cqw here resolved
        against the viewport and the frame changed thickness with the window. */
-    padding: 1.4%;
+    padding: 2.4%;   /* same band as the キティ型 POP */
     box-shadow: 0 2px 0 rgba(0,0,0,.04), 0 18px 30px -20px rgba(20,12,4,.45);
   }
   .label-inner{
@@ -195,7 +195,7 @@
   /* The band above the allergy notice is the frame showing through, so it is the
      frame's colour at the frame's own thickness and runs the full inner width. */
   .divider.solid{
-    height:1.4cqw;
+    height:2.4cqw;
     background: var(--frame-color,#f6de9e);
     margin:1cqw calc(var(--inner-pad, 0.8cqw) * -1) 1.1cqw;
   }
@@ -774,7 +774,7 @@
       </div>
 
       <h3 class="sub">白枠の調整</h3>
-      <p class="hint" style="margin:0 0 10px;">外枠（色つき部分）の太さは 1.4 固定・角丸なしです。白背景の余白だけ調整できます。</p>
+      <p class="hint" style="margin:0 0 10px;">外枠（色つき部分）の太さは 2.4 固定・角丸なしです。白背景の余白だけ調整できます。</p>
       <div class="slider-field">
         <label for="lInnerPad">白背景の余白<output id="lInnerPadVal">0.8</output></label>
         <input type="range" id="lInnerPad" min="0" max="7" step="0.1" value="0.8">
