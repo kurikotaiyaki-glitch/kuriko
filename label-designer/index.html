@@ -926,7 +926,7 @@
     },
     {
       name:"季節限定", tag:"旬の素材でつくる品",
-      badge:"季節限定", ruby:"さくらもち", title:"桜もち", subtitle:"Sakura Mochi",
+      badge:"季節\n限定", ruby:"さくらもち", title:"桜もち", subtitle:"Sakura Mochi",
       desc:"道明寺粉のもちもち食感と、\n桜葉の塩気がきいた\n春だけの和菓子です。",
       price:180, taxRate:8, allergies:DEFAULT_ALLERGIES,
       palette:"sakura",
@@ -934,7 +934,7 @@
     },
     {
       name:"期間限定", tag:"期間を区切って販売",
-      badge:"期間限定", ruby:"とうにゅう", title:"豆乳クリーム", subtitle:"Soybean Milk Cream",
+      badge:"期間\n限定", ruby:"とうにゅう", title:"豆乳クリーム", subtitle:"Soybean Milk Cream",
       desc:"大人気商品!!国産大豆の\nコクを生かした、なめらかで\n甘さ控えめのクリームです。",
       price:204, taxRate:8, allergies:DEFAULT_ALLERGIES,
       palette:"classic",
@@ -1196,7 +1196,9 @@
   }
   function defaultAligns(){
     var o = {};
-    TEXT_ELEMENTS.forEach(function(e){ if(e.align) o[e.key] = (e.key === "title" ? "center" : "left"); });
+    TEXT_ELEMENTS.forEach(function(e){
+      if(e.align) o[e.key] = (e.key === "title" || e.key === "subtitle") ? "center" : "left";
+    });
     return o;
   }
 
@@ -1699,14 +1701,15 @@
 
   // Filled in against fresh defaults so a stored set from an older version,
   // missing whatever has been added since, still loads.
-  var PREF_VERSION = 2;
+  var PREF_VERSION = 3;
   function readPrefs(){
     try{
       var raw = localStorage.getItem(PREF_KEY);
       if(!raw) return null;
       var p = JSON.parse(raw) || {};
-      // v2 put every text in the title's face and centred the title only; a 書式
-      // stored before that is brought up to it once, keeping sizes and positions.
+      // v2 put every text in the title's face and centred the title; v3 centred the
+      // romaji too. A 書式 stored before the current rule is brought up to it once,
+      // keeping the sizes and nudges already dialled in.
       if(p.v !== PREF_VERSION){ p.fonts = defaultFonts(); p.aligns = defaultAligns(); p.v = PREF_VERSION; }
       return {
         fonts: Object.assign(defaultFonts(), p.fonts || {}),
@@ -1916,6 +1919,7 @@
     catch(e){ return false; }
   }
   var seededIds = [];
+  var badgeLinesFixed = false;
   function loadProducts(){
     var stored = readJson(PRODUCTS_KEY);
     products = {
@@ -1941,10 +1945,27 @@
       });
     });
     seededIds = seeded;
-    if(added) saveProducts();
+
+    // Four-character 〜限定 badges are set two lines up in the printed POPs; a list
+    // saved before that rule gets them split once.
+    var fixed = false;
+    if(!stored.badgeLinesFixed){
+      ["wide","tall"].forEach(function(m){
+        products[m].forEach(function(prod){
+          var b = prod.badge || "";
+          if(b.length === 4 && b.indexOf("\n") < 0 && b.slice(2) === "限定"){
+            prod.badge = b.slice(0,2) + "\n" + b.slice(2);
+            fixed = true;
+          }
+        });
+      });
+      badgeLinesFixed = true;
+      fixed = true;
+    }
+    if(added || fixed) saveProducts();
   }
   function saveProducts(){
-    if(!writeJson(PRODUCTS_KEY, {wide:products.wide, tall:products.tall, seededIds:seededIds})){
+    if(!writeJson(PRODUCTS_KEY, {wide:products.wide, tall:products.tall, seededIds:seededIds, badgeLinesFixed:badgeLinesFixed})){
       setStatus("このブラウザでは商品を記録できません（プライベートウィンドウなど）", "err");
     }
   }
