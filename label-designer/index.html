@@ -191,7 +191,7 @@
     overflow:hidden;
   }
   .divider.dotted i{
-    flex:0 0 1.25cqw;
+    flex:0 1 2cqw;        /* wide dashes, so only a hairline of gap is left */
     height:1.1cqw;
     border-radius:.55cqw;
     background: var(--frame-color,#f6de9e);
@@ -2309,7 +2309,7 @@
   }
 
   // init
-  for(var dot=0; dot<46; dot++){ els.dottedDivider.appendChild(document.createElement("i")); }
+  for(var dot=0; dot<44; dot++){ els.dottedDivider.appendChild(document.createElement("i")); }
   buildTemplateCards();
   buildPaletteChips();
   buildFormatRows();
@@ -2317,7 +2317,7 @@
   applyTemplate(0, readPrefs());
   setActiveTemplate(0);
   renderSaved();
-  for(var td=0; td<46; td++){ els.tallDots.appendChild(document.createElement("i")); }
+  for(var td=0; td<44; td++){ els.tallDots.appendChild(document.createElement("i")); }
   loadProducts();
   headerImages = readJson(IMG_KEY);
   setMode("wide");
