@@ -119,7 +119,6 @@
     background: var(--bg-color, #ffffff);
     border-radius:0;
     padding: var(--inner-pad, 2cqw);
-    padding-left: calc(var(--inner-pad, 2cqw) + var(--badge-band));
     display:flex; flex-direction:column;
     color: var(--text-color,#1a1a1a);
   }
@@ -129,9 +128,10 @@
      the thick frame. 20mm of a 132mm POP, in units of the label's own width. */
   #label{ --badge-band: 15.92cqw; }
   .badge-band{
-    position:absolute; left:0; top:0; bottom:0;
-    width: var(--badge-band);
+    flex:none; align-self:flex-start;
+    width: var(--badge-band); height: var(--badge-band);
     background: var(--frame-color,#f6de9e);
+    margin: calc(var(--inner-pad, 0.8cqw) * -1) 0 0 calc(var(--inner-pad, 0.8cqw) * -1);
   }
   /* the circle is replaced by the band above; kept in the DOM so the badge data
      and the キティ型 POP's own badge are untouched */
@@ -211,7 +211,6 @@
     height:2.4cqw;
     background: var(--frame-color,#f6de9e);
     margin:1cqw calc(var(--inner-pad, 0.8cqw) * -1) 1.1cqw;
-    margin-left: calc((var(--inner-pad, 0.8cqw) + var(--badge-band)) * -1);
   }
 
   .label-mid{ flex:1; display:flex; align-items:center; gap:2.8cqw; }
@@ -652,8 +651,8 @@
     <div class="stage-card">
       <div id="label">
         <div class="label-inner" id="labelInner">
-          <div class="badge-band" aria-hidden="true"></div>
           <div class="label-top">
+            <div class="badge-band" aria-hidden="true"></div>
             <div class="badge-wrap" id="badgeWrap">
               <div class="badge-shape"></div>
               <div class="badge-text" id="badgeText">定番</div>
