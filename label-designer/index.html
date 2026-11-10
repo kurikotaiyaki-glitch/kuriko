@@ -108,7 +108,9 @@
     aspect-ratio: 132 / 63;   /* the printed POP: 13.2cm x 6.3cm */
     border-radius:0;
     background: var(--frame-color, #f6de9e);
-    padding: 0.8cqw;
+    /* percent, not cqw: an element cannot query itself, so cqw here resolved
+       against the viewport and the frame changed thickness with the window. */
+    padding: 0.8%;
     box-shadow: 0 2px 0 rgba(0,0,0,.04), 0 18px 30px -20px rgba(20,12,4,.45);
   }
   .label-inner{
@@ -190,8 +192,12 @@
     border-radius:.55cqw;
     background: var(--frame-color,#f6de9e);
   }
+  /* The band above the allergy notice is the frame showing through, so it is the
+     frame's colour at the frame's own thickness and runs the full inner width. */
   .divider.solid{
-    height:0; border-top:.26cqw solid var(--surface-line, #e7e0cf); margin:1cqw 0 1.1cqw;
+    height:0.8cqw;
+    background: var(--frame-color,#f6de9e);
+    margin:1cqw calc(var(--inner-pad, 0.8cqw) * -1) 1.1cqw;
   }
 
   .label-mid{ flex:1; display:flex; align-items:center; gap:2.8cqw; }
