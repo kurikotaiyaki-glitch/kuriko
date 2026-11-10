@@ -1197,7 +1197,7 @@
   function defaultAligns(){
     var o = {};
     TEXT_ELEMENTS.forEach(function(e){
-      if(e.align) o[e.key] = (e.key === "title" || e.key === "subtitle") ? "center" : "left";
+      if(e.align) o[e.key] = (e.key === "title" || e.key === "subtitle" || e.key === "ruby") ? "center" : "left";
     });
     return o;
   }
@@ -1701,15 +1701,16 @@
 
   // Filled in against fresh defaults so a stored set from an older version,
   // missing whatever has been added since, still loads.
-  var PREF_VERSION = 3;
+  var PREF_VERSION = 4;
   function readPrefs(){
     try{
       var raw = localStorage.getItem(PREF_KEY);
       if(!raw) return null;
       var p = JSON.parse(raw) || {};
-      // v2 put every text in the title's face and centred the title; v3 centred the
-      // romaji too. A 書式 stored before the current rule is brought up to it once,
-      // keeping the sizes and nudges already dialled in.
+      // The heading block centres as one: title, romaji and furigana (v2 set the
+      // single face, v3 and v4 added the romaji and the furigana). A 書式 stored
+      // before the current rule is brought up to it once, keeping the sizes and
+      // nudges already dialled in.
       if(p.v !== PREF_VERSION){ p.fonts = defaultFonts(); p.aligns = defaultAligns(); p.v = PREF_VERSION; }
       return {
         fonts: Object.assign(defaultFonts(), p.fonts || {}),
