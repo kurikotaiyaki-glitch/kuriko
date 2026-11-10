@@ -119,10 +119,23 @@
     background: var(--bg-color, #ffffff);
     border-radius:0;
     padding: var(--inner-pad, 2cqw);
+    padding-left: calc(var(--inner-pad, 2cqw) + var(--badge-band));
     display:flex; flex-direction:column;
     color: var(--text-color,#1a1a1a);
   }
   .label-top{ display:flex; align-items:center; gap:2.4cqw; }
+
+  /* A plain band for a badge stuck on after printing: 2cm wide, measured from
+     the thick frame. 20mm of a 132mm POP, in units of the label's own width. */
+  #label{ --badge-band: 15.92cqw; }
+  .badge-band{
+    position:absolute; left:0; top:0; bottom:0;
+    width: var(--badge-band);
+    background: var(--frame-color,#f6de9e);
+  }
+  /* the circle is replaced by the band above; kept in the DOM so the badge data
+     and the キティ型 POP's own badge are untouched */
+  #label .badge-wrap{ display:none; }
 
   /* Nudges use transforms so moving a piece never reflows the rest of the label. */
   .badge-wrap{
@@ -198,6 +211,7 @@
     height:2.4cqw;
     background: var(--frame-color,#f6de9e);
     margin:1cqw calc(var(--inner-pad, 0.8cqw) * -1) 1.1cqw;
+    margin-left: calc((var(--inner-pad, 0.8cqw) + var(--badge-band)) * -1);
   }
 
   .label-mid{ flex:1; display:flex; align-items:center; gap:2.8cqw; }
@@ -638,6 +652,7 @@
     <div class="stage-card">
       <div id="label">
         <div class="label-inner" id="labelInner">
+          <div class="badge-band" aria-hidden="true"></div>
           <div class="label-top">
             <div class="badge-wrap" id="badgeWrap">
               <div class="badge-shape"></div>
