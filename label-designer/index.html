@@ -946,7 +946,7 @@
 
   // The shop's printed POPs, as fixed designs: pick one, correct the price.
   var PRESETS_WIDE = [
-    {id:"ogura", name:"小倉あん", badge:"", ruby:"おぐら", title:"小倉あん", subtitle:"Ogura Red Bean",
+    {id:"ogura", name:"小倉あん", badge:"期間\n限定", ruby:"おぐら", title:"小倉あん", subtitle:"Ogura Red Bean",
      desc:"厳選した北海道産小豆を使用。\n甘さ控えめに炊き上げた\nこだわりの粒あんです。",
      price:195, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
      colors:{frame:"#8e2239", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
@@ -954,7 +954,7 @@
      desc:"北海道産の手亡豆を使用。\n上品で奥深い甘みのあんこです。",
      price:195, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
      colors:{frame:"#efe4b0", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
-    {id:"cream", name:"プレミアムクリーム", badge:"", ruby:"", title:"プレミアムクリーム", subtitle:"Premium Cream",
+    {id:"cream", name:"プレミアムクリーム", badge:"期間\n限定", ruby:"", title:"プレミアムクリーム", subtitle:"Premium Cream",
      desc:"北海道ミルク使用。\n生地に合わせて独自開発した\nオリジナルカスタードクリーム！",
      price:204, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
      colors:{frame:"#e9b81f", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
@@ -962,7 +962,7 @@
      desc:"紫いもの風味を生かした、\n素朴で飽きのこないおいしさ！",
      price:213, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
      colors:{frame:"#7a2e7e", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
-    {id:"kuriko", name:"くりこあん", badge:"", ruby:"", title:"くりこあん", subtitle:"Chestnut & Ogura Red Bean",
+    {id:"kuriko", name:"くりこあん", badge:"期間\n限定", ruby:"", title:"くりこあん", subtitle:"Chestnut & Ogura Red Bean",
      desc:"当店看板商品！厳選した\n小豆を使用したこしあんに、\n栗の甘露煮をたっぷり入れました。",
      price:241, taxRate:8, allergyText:"【アレルギー表示 29品目】 卵・小麦・乳成分・大豆",
      colors:{frame:"#5e2340", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}},
@@ -1904,7 +1904,7 @@
               price:200, taxRate:8, allergyText:ALLERGY_PREFIX+" 卵・小麦・乳成分・大豆",
               copy:"", header:"#f6c2d9", body:"#e60012", badge_color:ACCENT_RED};
     }
-    return {id:newId(), name:"新しい商品", badge:"", ruby:"", title:"", subtitle:"", desc:"",
+    return {id:newId(), name:"新しい商品", badge:"期間\n限定", ruby:"", title:"", subtitle:"", desc:"",
             price:200, taxRate:8, allergyText:ALLERGY_PREFIX+" 卵・小麦・乳成分・大豆",
             colors:{frame:"#f6de9e", bg:"#ffffff", badge:ACCENT_RED, accent:ACCENT_RED, text:"#1a1a1a"}};
   }
@@ -1920,6 +1920,7 @@
   }
   var seededIds = [];
   var badgeLinesFixed = false;
+  var badgeFilled = false;
   function loadProducts(){
     var stored = readJson(PRODUCTS_KEY);
     products = {
@@ -1949,6 +1950,13 @@
     // Four-character 〜限定 badges are set two lines up in the printed POPs; a list
     // saved before that rule gets them split once.
     var fixed = false;
+    if(!stored.badgeFilled){
+      products.wide.forEach(function(prod){
+        if(!(prod.badge || "").trim()) prod.badge = "期間\n限定";
+      });
+      badgeFilled = true;
+      fixed = true;
+    }
     if(!stored.badgeLinesFixed){
       ["wide","tall"].forEach(function(m){
         products[m].forEach(function(prod){
@@ -1965,7 +1973,7 @@
     if(added || fixed) saveProducts();
   }
   function saveProducts(){
-    if(!writeJson(PRODUCTS_KEY, {wide:products.wide, tall:products.tall, seededIds:seededIds, badgeLinesFixed:badgeLinesFixed})){
+    if(!writeJson(PRODUCTS_KEY, {wide:products.wide, tall:products.tall, seededIds:seededIds, badgeLinesFixed:badgeLinesFixed, badgeFilled:badgeFilled})){
       setStatus("このブラウザでは商品を記録できません（プライベートウィンドウなど）", "err");
     }
   }
