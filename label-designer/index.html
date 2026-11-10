@@ -130,7 +130,7 @@
   .badge-band{
     flex:none; align-self:flex-start;
     width: var(--badge-band); height: var(--badge-band);
-    background: var(--frame-color,#f6de9e);
+    background: var(--frame-color,#f6de9e) var(--badge-image, none) center/contain no-repeat;
     margin: calc(var(--inner-pad, 0.8cqw) * -1) 0 0 calc(var(--inner-pad, 0.8cqw) * -1);
   }
   /* the circle is replaced by the band above; kept in the DOM so the badge data
@@ -759,6 +759,15 @@
       </div>
       <p class="hint" style="margin:12px 0 0;">変更した金額はこのPCに記録され、次に開いたときも保たれます。</p>
 
+      <div id="badgeUploadRow" hidden>
+        <h3 class="sub">バッジ画像（左上 2cm のベタ面）</h3>
+        <div class="header-upload">
+          <input type="file" id="badgeFile" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+          <button type="button" class="btn-sm" id="badgeClear">画像を外す</button>
+        </div>
+        <p class="hint" style="margin:8px 0 0;">商品ごとに設定できます。画像はこのPC内にのみ保存されます。</p>
+      </div>
+
       <div id="headerUploadRow" hidden>
         <h3 class="sub">ヘッダー画像（キャラクター部分）</h3>
         <div class="header-upload">
@@ -1194,6 +1203,7 @@
    "tallDots","tallDesc","tallPrice","tallTaxPrice","tallAllergy","tallCopy",
    "presetPanel","presetGrid","presetHint","presetPrice","presetTaxRate","presetTaxOut",
    "headerUploadRow","headerFile","headerClear",
+   "badgeUploadRow","badgeFile","badgeClear",
    "productForm","productFormTitle","productFields","productSave","productCancel"
   ].forEach(function(id){ els[id] = document.getElementById(id); });
 
@@ -1603,6 +1613,10 @@
       if(e.align) label.style.setProperty("--align-"+e.key, state.aligns[e.key]);
     });
 
+    var prod = (mode === "wide") ? currentProduct() : null;
+    var bimg = prod ? badgeImages[prod.id] : null;
+    label.style.setProperty("--badge-image", bimg ? 'url("' + bimg + '")' : "none");
+
     els.badgeText.textContent = state.badge;
     els.badgeWrap.hidden = !state.badge.trim();   // presets without a badge (小倉あん など)
     els.rubyOut.textContent = state.ruby;
@@ -1672,6 +1686,14 @@
     els.presetPrice.addEventListener("input", savePriceEdit);
     els.presetTaxRate.addEventListener("change", savePriceEdit);
     els.headerFile.addEventListener("change", function(){ loadHeaderImage(this.files && this.files[0]); this.value = ""; });
+    els.badgeFile.addEventListener("change", function(){ loadBadgeImage(this.files && this.files[0]); this.value = ""; });
+    els.badgeClear.addEventListener("click", function(){
+      var prod = currentProduct();
+      if(!prod) return;
+      delete badgeImages[prod.id];
+      writeJson(BADGE_IMG_KEY, badgeImages);
+      applyPreset();
+    });
     els.productSave.addEventListener("click", submitProductForm);
     els.productCancel.addEventListener("click", closeProductForm);
     els.headerClear.addEventListener("click", function(){
@@ -1876,10 +1898,12 @@
   // record lives in this browser and the built-in ones are just the starting data.
   var PRODUCTS_KEY = "kuriko-pop-products";
   var IMG_KEY = "kuriko-pop-headers";
+  var BADGE_IMG_KEY = "kuriko-pop-badges";
   var mode = "wide";
   var chosen = {wide:0, tall:0};
   var products = {wide:[], tall:[]};
-  var headerImages = {};   // product id -> data URL
+  var headerImages = {};   // tall product id -> data URL
+  var badgeImages = {};    // wide product id -> data URL
   var editingIndex = -1;   // -1 = adding, otherwise the product being edited
 
   var WIDE_FIELDS = [
@@ -2023,6 +2047,7 @@
     els.label.hidden = (mode === "tall");
     els.labelTall.hidden = (mode !== "tall");
     els.headerUploadRow.hidden = (mode !== "tall");
+    els.badgeUploadRow.hidden = (mode !== "wide");
     closeProductForm();
     if(free){ render(); }
     else { buildPresetGrid(); applyPreset(); }
@@ -2232,6 +2257,24 @@
     applyPreset();
   }
 
+  function loadBadgeImage(file){
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      var prod = currentProduct();
+      if(!prod) return;
+      badgeImages[prod.id] = reader.result;
+      if(!writeJson(BADGE_IMG_KEY, badgeImages)){
+        setStatus("画像は今回だけ使えます（容量が大きく記録できませんでした）", "err");
+      }else{
+        setStatus("バッジ画像を読み込みました", "ok");
+      }
+      applyPreset();
+    };
+    reader.onerror = function(){ setStatus("画像を読み込めませんでした", "err"); };
+    reader.readAsDataURL(file);
+  }
+
   function loadHeaderImage(file){
     if(!file) return;
     var reader = new FileReader();
@@ -2332,6 +2375,7 @@
   renderSaved();
   loadProducts();
   headerImages = readJson(IMG_KEY);
+  badgeImages = readJson(BADGE_IMG_KEY);
   setMode("wide");
 })();
 </script>
