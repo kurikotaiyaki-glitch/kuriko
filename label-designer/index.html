@@ -105,6 +105,7 @@
     container-type: inline-size;
     container-name: label;
     width:100%;
+    aspect-ratio: 132 / 63;   /* the printed POP: 13.2cm x 6.3cm */
     border-radius:0;
     background: var(--frame-color, #f6de9e);
     padding: 0.8cqw;
@@ -112,7 +113,7 @@
   }
   .label-inner{
     position:relative;
-    width:100%;
+    width:100%; height:100%;
     background: var(--bg-color, #ffffff);
     border-radius:0;
     padding: var(--inner-pad, 2cqw);
@@ -151,6 +152,7 @@
   .heading-block{ min-width:0; flex:1; }
   .ruby{
     margin:0 0 .2cqw;
+    font-weight:900;
     font-family: var(--font-ruby);
     font-size: calc(1.6cqw * var(--scale-ruby,1));
     text-align: var(--align-ruby, left);
@@ -170,6 +172,7 @@
   }
   .subtitle{
     margin:.5cqw 0 0;
+    font-weight:900;
     font-family: var(--font-subtitle);
     font-size: calc(2.8cqw * var(--scale-subtitle,1));
     text-align: var(--align-subtitle, left);
@@ -188,7 +191,7 @@
     overflow:hidden;
   }
   .divider.dotted i{
-    flex:0 0 1.7cqw;
+    flex:0 0 1.25cqw;
     height:1.1cqw;
     border-radius:.55cqw;
     background: var(--frame-color,#f6de9e);
@@ -200,6 +203,7 @@
   .label-mid{ flex:1; display:flex; align-items:center; gap:2.8cqw; }
   .desc{
     margin:0; flex:1; min-width:0;
+    font-weight:900;
     font-family: var(--font-desc);
     font-size: calc(2.3cqw * var(--scale-desc,1));
     text-align: var(--align-desc, left);
@@ -256,6 +260,7 @@
 
   .allergy{
     margin:0; flex:none;
+    font-weight:900;
     font-family: var(--font-allergy);
     font-size: calc(1.85cqw * var(--scale-allergy,1));
     text-align: var(--align-allergy, left);
@@ -613,6 +618,7 @@
     .stage{ position:static; }
     .stage-card{ box-shadow:none; border:none; background:#fff; padding:0; }
     #label, #labelTall{ box-shadow:none; }
+    #label{ width:132mm; height:63mm; aspect-ratio:auto; }
   }
 </style>
 
@@ -908,7 +914,7 @@
       desc:"しっとり生地に自家製の栗あんを\n包み込んで焼き上げた、\n創業以来の看板商品です。",
       price:162, taxRate:8, allergies:DEFAULT_ALLERGIES,
       palette:"classic",
-      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"zenkaku", desc:"zenkaku", subtitle:"spacemono", price:"kanteiryu", allergy:"zenkaku"}
+      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"kanteiryu", desc:"kanteiryu", subtitle:"kanteiryu", price:"kanteiryu", allergy:"kanteiryu"}
     },
     {
       name:"準定番", tag:"定番に次ぐ人気商品",
@@ -916,7 +922,7 @@
       desc:"ふんわり焼き上げた生地に、\n粒あんと大きな栗を\nまるごと挟みました。",
       price:194, taxRate:8, allergies:DEFAULT_ALLERGIES,
       palette:"autumn",
-      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"noto", desc:"noto", subtitle:"oswald", price:"kanteiryu", allergy:"noto"}
+      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"kanteiryu", desc:"kanteiryu", subtitle:"kanteiryu", price:"kanteiryu", allergy:"kanteiryu"}
     },
     {
       name:"季節限定", tag:"旬の素材でつくる品",
@@ -924,7 +930,7 @@
       desc:"道明寺粉のもちもち食感と、\n桜葉の塩気がきいた\n春だけの和菓子です。",
       price:180, taxRate:8, allergies:DEFAULT_ALLERGIES,
       palette:"sakura",
-      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"kosugi", desc:"kosugi", subtitle:"bebas", price:"kanteiryu", allergy:"kosugi"}
+      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"kanteiryu", desc:"kanteiryu", subtitle:"kanteiryu", price:"kanteiryu", allergy:"kanteiryu"}
     },
     {
       name:"期間限定", tag:"期間を区切って販売",
@@ -932,7 +938,7 @@
       desc:"大人気商品!!国産大豆の\nコクを生かした、なめらかで\n甘さ控えめのクリームです。",
       price:204, taxRate:8, allergies:DEFAULT_ALLERGIES,
       palette:"classic",
-      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"zenkaku", desc:"zenkaku", subtitle:"spacemono", price:"kanteiryu", allergy:"zenkaku"}
+      fonts:{title:"kanteiryu", badge:"kanteiryu", ruby:"kanteiryu", desc:"kanteiryu", subtitle:"kanteiryu", price:"kanteiryu", allergy:"kanteiryu"}
     }
   ];
 
@@ -1182,9 +1188,15 @@
     TEXT_ELEMENTS.forEach(function(e){ o[e.key] = 1; });
     return o;
   }
+  // Every text uses the title's face; the printed POPs are set in one font.
+  function defaultFonts(){
+    var o = {};
+    TEXT_ELEMENTS.forEach(function(e){ o[e.key] = "kanteiryu"; });
+    return o;
+  }
   function defaultAligns(){
     var o = {};
-    TEXT_ELEMENTS.forEach(function(e){ if(e.align) o[e.key] = "left"; });
+    TEXT_ELEMENTS.forEach(function(e){ if(e.align) o[e.key] = (e.key === "title" ? "center" : "left"); });
     return o;
   }
 
@@ -1676,6 +1688,7 @@
       prefTimer = null;
       try{
         localStorage.setItem(PREF_KEY, JSON.stringify({
+          v: PREF_VERSION,
           fonts: state.fonts, sizes: state.sizes, aligns: state.aligns,
           pos: state.pos, innerPad: state.innerPad,
           customAllergies: state.customAllergies
@@ -1686,13 +1699,17 @@
 
   // Filled in against fresh defaults so a stored set from an older version,
   // missing whatever has been added since, still loads.
+  var PREF_VERSION = 2;
   function readPrefs(){
     try{
       var raw = localStorage.getItem(PREF_KEY);
       if(!raw) return null;
       var p = JSON.parse(raw) || {};
+      // v2 put every text in the title's face and centred the title only; a 書式
+      // stored before that is brought up to it once, keeping sizes and positions.
+      if(p.v !== PREF_VERSION){ p.fonts = defaultFonts(); p.aligns = defaultAligns(); p.v = PREF_VERSION; }
       return {
-        fonts: p.fonts || null,
+        fonts: Object.assign(defaultFonts(), p.fonts || {}),
         sizes: Object.assign(defaultSizes(), p.sizes || {}),
         aligns: Object.assign(defaultAligns(), p.aligns || {}),
         pos: Object.assign(defaultPos(), p.pos || {}),
@@ -2262,7 +2279,7 @@
   }
 
   // init
-  for(var dot=0; dot<30; dot++){ els.dottedDivider.appendChild(document.createElement("i")); }
+  for(var dot=0; dot<46; dot++){ els.dottedDivider.appendChild(document.createElement("i")); }
   buildTemplateCards();
   buildPaletteChips();
   buildFormatRows();
@@ -2270,7 +2287,7 @@
   applyTemplate(0, readPrefs());
   setActiveTemplate(0);
   renderSaved();
-  for(var td=0; td<30; td++){ els.tallDots.appendChild(document.createElement("i")); }
+  for(var td=0; td<46; td++){ els.tallDots.appendChild(document.createElement("i")); }
   loadProducts();
   headerImages = readJson(IMG_KEY);
   setMode("wide");
